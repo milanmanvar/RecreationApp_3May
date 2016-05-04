@@ -160,7 +160,10 @@ public class SearchingWithClubActivity extends Activity {
                 String id = UUID.randomUUID().toString();
                 params.put("id", reCreationApplication.sharedPreferences.getString("userguid", ""));
 //                params.put("userId", reCreationApplication.sharedPreferences.getString("userguid", ""));
-                params.put("selectedClubName", clubs);
+                params.put("selectedClubName", reCreationApplication.sharedPreferences.getString("club", ""));
+                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();
+                e.putString("clubsfilter", "["+clubs+"]");
+                e.commit();
                 params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsfilter", ""));
                 params.put("fullName", reCreationApplication.sharedPreferences.getString("fullname", ""));
                 Log.e("update selected clubs", "" + params.toString());

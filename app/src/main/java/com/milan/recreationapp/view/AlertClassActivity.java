@@ -181,8 +181,8 @@ public class AlertClassActivity extends Activity {
                 params.put("instructor", timeTable_new.getInstructor());
                 params.put("gymClassDescription", timeTable_new.getDesc());
                 params.put("dayString", timeTable_new.getDay());
-                //params.put("alertPrior", radioButton.getText().toString());
-                //params.put("calendarAlertEventIdentifier", _eventId+"");
+                params.put("alertPrior", timeBefore+"");
+                params.put("calendarAlertEventIdentifier", _eventId+"");
 
 
                 Log.e("create class param:", "" + params.toString());
