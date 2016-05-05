@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -27,6 +28,7 @@ import com.milan.recreationapp.adapter.ExpandableListAdapter;
 import com.milan.recreationapp.model.ClubTimeTable_New;
 import com.milan.recreationapp.util.Constant;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -167,16 +169,49 @@ public class SavedClassActivity extends Activity {
         setDataSet();
     }
 
-    /*private void deletetGymClassApicall() {
+//    public void deleteClassApiCall(final ClubTimeTable_New club) {
+//        final ProgressDialog pd = ProgressDialog.show(SavedClassActivity.this, "", "Please wait", false, false);
+//        StringRequest reqDownloadClub = new StringRequest(Constant.deleteGymClass+club.getClassId(), new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String response) {
+//                Log.e("Response:", "" + response);
+//
+//                if (pd != null && pd.isShowing())
+//                    pd.dismiss();
+//
+//                deleteSavedClass(club);
+//
+//
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                if (pd != null && pd.isShowing())
+//                    pd.dismiss();
+//            }
+//        }) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                HashMap<String, String> hashMap = new HashMap<String, String>();
+//                hashMap.put("Content-Type", "application/xml; charset=utf-8");
+//
+//                return hashMap;
+//            }
+//        };
+//        application.addToRequestQueue(reqDownloadClub);
+//    }
+
+
+    public void deleteClassApiCall(final ClubTimeTable_New club) {
         final ProgressDialog pd = ProgressDialog.show(SavedClassActivity.this, "", "Please wait", false, false);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constant.saveMyClassUrl,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constant.deleteGymClass+club.getClassId(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         if (pd != null && pd.isShowing())
                             pd.dismiss();
 
-                        finish();
+                        deleteSavedClass(club);
 
                     }
                 },
@@ -195,18 +230,8 @@ public class SavedClassActivity extends Activity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                String id = UUID.randomUUID().toString();
-                params.put("id", id);
-                params.put("userId", reCreationApplication.sharedPreferences.getString("userguid", ""));
-                params.put("name", timeTable_new.getClassName());
-                params.put("clubName", reCreationApplication.sharedPreferences.getString("club", ""));
-                params.put("duration", timeTable_new.getDuration());
-                params.put("location", timeTable_new.getLocation());
-                params.put("instructor", timeTable_new.getInstructor());
-                params.put("gymClassDescription", timeTable_new.getDesc());
-                params.put("dayString", timeTable_new.getDay());
-                //params.put("alertPrior", radioButton.getText().toString());
-                //params.put("calendarAlertEventIdentifier", _eventId+"");
+
+                params.put("id",club.getClassId() );
 
 
                 Log.e("create class param:", "" + params.toString());
@@ -233,8 +258,8 @@ public class SavedClassActivity extends Activity {
             }
 
         };
-        reCreationApplication.addToRequestQueue(stringRequest);
-    }*/
+        application.addToRequestQueue(stringRequest);
+    }
 
     private void setDataSet() {
         expandableListDetail = new LinkedHashMap<String, List<ClubTimeTable_New>>();

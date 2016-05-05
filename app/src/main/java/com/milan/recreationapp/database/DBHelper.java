@@ -40,6 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private final String TABLE_CLUB_DETAIL_COL_CLASS_LOCATION = "Location";
     private final String TABLE_CLUB_DETAIL_COL_IS_SAVED = "IsSaved";
     private final String TABLE_CLUB_DETAIL_COL_EVENDID = "EventId";
+    private final String TABLE_CLUB_DETAIL_COL_CLASSID = "ClassId";
 
     private final String TABLE_CLUB = "Club";
     private final String TABLE_CLUB_COL_ID = "_id";
@@ -159,6 +160,7 @@ public class DBHelper extends SQLiteOpenHelper {
             values.put(TABLE_CLUB_DETAIL_COL_CLASS_LOCATION, location);
             values.put(TABLE_CLUB_DETAIL_COL_IS_SAVED, 0);
             values.put(TABLE_CLUB_DETAIL_COL_EVENDID, 0);
+            values.put(TABLE_CLUB_DETAIL_COL_CLASSID, "");
             long id = myDataBase.insert(TABLE_CLUB_DETAIL, null, values);
             Log.e("id:" + id, "" + clubName);
             myDataBase.setTransactionSuccessful();
@@ -231,6 +233,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     clubTimeTable.setTime(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_CLASS_TIME)));
                     clubTimeTable.setIsSaved(cursor.getInt(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_IS_SAVED)));
                     clubTimeTable.setEventId(cursor.getLong(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_EVENDID)));
+                    clubTimeTable.setClassId(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_CLASSID)));
 
                     timeTables.add(clubTimeTable);
 
@@ -269,6 +272,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     clubTimeTable.setTime(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_CLASS_TIME)));
                     clubTimeTable.setIsSaved(cursor.getInt(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_IS_SAVED)));
                     clubTimeTable.setEventId(cursor.getLong(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_EVENDID)));
+                    clubTimeTable.setClassId(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_CLASSID)));
                     timeTables.add(clubTimeTable);
 
                 } while (cursor.moveToNext());
@@ -306,6 +310,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     clubTimeTable.setTime(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_CLASS_TIME)));
                     clubTimeTable.setIsSaved(cursor.getInt(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_IS_SAVED)));
                     clubTimeTable.setEventId(cursor.getLong(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_EVENDID)));
+                    clubTimeTable.setClassId(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_CLASSID)));
                     timeTables.add(clubTimeTable);
 
                 } while (cursor.moveToNext());
@@ -438,6 +443,19 @@ public class DBHelper extends SQLiteOpenHelper {
             myDataBase.endTransaction();
         }
     }
+    public void saveToMyClassWithClassId(int id,String classId) {
+        String queryUpdate = "UPDATE ClubsDetail SET IsSaved='1', ClassId='"+classId+"' WHERE _id='%d' ";
+        try {
+            myDataBase.beginTransaction();
+            String sql = String.format(queryUpdate, id);
+            myDataBase.execSQL(sql);
+            myDataBase.setTransactionSuccessful();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            myDataBase.endTransaction();
+        }
+    }
 
     public void removeToMyClass(int id) {
         String queryUpdate = "UPDATE ClubsDetail SET IsSaved='0', EventId='0' WHERE _id='%d' ";
@@ -519,6 +537,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     clubTimeTable.setInstructor(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_CLASS_INSTRUCTOR)));
                     clubTimeTable.setTime(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_CLASS_TIME)));
                     clubTimeTable.setIsSaved(cursor.getInt(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_IS_SAVED)));
+                    clubTimeTable.setClassId(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_CLASSID)));
                     timeTables.add(clubTimeTable);
 
                 } while (cursor.moveToNext());
@@ -557,6 +576,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     clubTimeTable.setTime(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_CLASS_TIME)));
                     clubTimeTable.setIsSaved(cursor.getInt(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_IS_SAVED)));
                     clubTimeTable.setEventId(cursor.getLong(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_EVENDID)));
+                    clubTimeTable.setClassId(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_DETAIL_COL_CLASSID)));
                     timeTables.add(clubTimeTable);
 
                 } while (cursor.moveToNext());

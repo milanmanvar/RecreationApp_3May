@@ -184,6 +184,7 @@ public class AlertClassActivity extends Activity {
                 params.put("alertPrior", timeBefore+"");
                 params.put("calendarAlertEventIdentifier", _eventId+"");
 
+                reCreationApplication.getDatabase().saveToMyClassWithClassId(timeTable_new.getId(),id);
 
                 Log.e("create class param:", "" + params.toString());
 

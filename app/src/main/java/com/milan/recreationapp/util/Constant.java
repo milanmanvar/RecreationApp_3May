@@ -12,5 +12,6 @@ public class Constant {
     public static final String saveMyClassUrl = "http://recreationappapi.azurewebsites.net/api/GymClass/CreateGymClass/";
     public static final String getMyClassUrl = "http://recreationappapi.azurewebsites.net/api/GymClass/GetGymClassesByUserId/";
     public static final String updateRecreationUser = "http://recreationappapi.azurewebsites.net/api/User/UpdateRecreationUser/";
+    public static final String deleteGymClass = "http://recreationappapi.azurewebsites.net/api/gymclass/deletegymclassbygymclassid/";
 
 }

@@ -9,8 +9,9 @@ public class ClubTimeTable_New implements Serializable {
 
 
     private int id, isSaved;
-    private String clubName, className, instructor, duration, time, day, classType, desc, location;
+    private String clubName, className, instructor, duration, time, day, classType, desc, location,classId;
     private long eventId;
+
 
     public long getEventId() {
         return eventId;
@@ -106,5 +107,13 @@ public class ClubTimeTable_New implements Serializable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getClassId() {
+        return classId;
+    }
+
+    public void setClassId(String classId) {
+        this.classId = classId;
     }
 }

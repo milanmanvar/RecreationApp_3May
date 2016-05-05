@@ -134,7 +134,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                ((SavedClassActivity) context).deleteSavedClass(clubTimeTable_new);
+                ((SavedClassActivity) context).deleteClassApiCall(clubTimeTable_new);
             }
         });
         builder.setNegativeButton("No thanks", new DialogInterface.OnClickListener() {
