@@ -156,13 +156,13 @@
 
     </LinearLayout>
 
-    <!--<ImageView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/activity_homescreen_ll_second_row"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:src="@drawable/ic_home_cartoon" />-->
+        android:src="@drawable/ic_home_cartoon" />
 
 
 </RelativeLayout>

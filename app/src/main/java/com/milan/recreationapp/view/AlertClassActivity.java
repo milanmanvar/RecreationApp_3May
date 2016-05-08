@@ -47,6 +47,7 @@ public class AlertClassActivity extends Activity {
     private ReCreationApplication reCreationApplication;
     private long _eventId;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,6 +144,73 @@ public class AlertClassActivity extends Activity {
         getActionBar().setCustomView(actionbarView);
     }
 
+
+    private void updateUserApicall() {
+        final ProgressDialog pd = ProgressDialog.show(AlertClassActivity.this, "", "Please wait", false, false);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constant.updateRecreationUser,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (pd != null && pd.isShowing())
+                            pd.dismiss();
+                        Log.e("update user", "" + response);
+                        //Toast.makeText(ClubTimeTableActivity.this,"successfully call", Toast.LENGTH_LONG).show();
+                    }
+                },
+
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+
+                        error.printStackTrace();
+                        if (pd != null && pd.isShowing())
+                            pd.dismiss();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("id", reCreationApplication.sharedPreferences.getString("userguid",""));
+                params.put("fullName", reCreationApplication.sharedPreferences.getString("fullname",""));
+                params.put("selectedClubName", reCreationApplication.sharedPreferences.getString("club",""));
+                params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsFilter",""));
+                params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsFilter",""));
+                params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsFilter",""));
+
+                Log.e("update user req param:", "" + params.toString());
+//                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();
+//                e.putString("userguid", userGUid);
+//                e.putString("clubsfilter", jsClub.toString());
+//                e.putString("fullname", etYourName.getText().toString().trim());
+//                e.commit();
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                //  headers.put("Content-Type", "application/x-www-form-urlencoded");
+                return headers;
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                //Toast.makeText(WelcomeScreen.this,""+response.toString(),Toast.LENGTH_LONG).show();
+                Log.e("status code", "" + response.statusCode);
+                return super.parseNetworkResponse(response);
+            }
+
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=UTF-8";
+            }
+
+        };
+        reCreationApplication.addToRequestQueue(stringRequest);
+    }
+
     private void createGymClassApicall() {
         final ProgressDialog pd = ProgressDialog.show(AlertClassActivity.this, "", "Please wait", false, false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Constant.saveMyClassUrl,
@@ -180,7 +248,7 @@ public class AlertClassActivity extends Activity {
                 params.put("location", timeTable_new.getLocation());
                 params.put("instructor", timeTable_new.getInstructor());
                 params.put("gymClassDescription", timeTable_new.getDesc());
-                params.put("dayString", timeTable_new.getDay());
+                params.put("dayString", timeTable_new.getDay().substring(0,1).toUpperCase()+timeTable_new.getDay().substring(1,timeTable_new.getDay().length()));
                 params.put("alertPrior", timeBefore+"");
                 params.put("calendarAlertEventIdentifier", _eventId+"");
 

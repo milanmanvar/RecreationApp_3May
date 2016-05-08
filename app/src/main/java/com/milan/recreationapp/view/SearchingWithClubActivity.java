@@ -28,6 +28,8 @@ import com.milan.recreationapp.adapter.SearchWithListAdapter;
 import com.milan.recreationapp.model.SearchWithModel;
 import com.milan.recreationapp.util.Constant;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,7 +55,7 @@ public class SearchingWithClubActivity extends Activity {
         getActionBar().setDisplayShowHomeEnabled(false);
         getActionBar().setDisplayUseLogoEnabled(false);
         getActionBar().setDisplayShowTitleEnabled(false);
-        setUpActionBar("Search with");
+        setUpActionBar("Clubs");
         checkedClubs = new ArrayList<>();
         reCreationApplication = (ReCreationApplication) getApplication();
 //        clubs = ((ReCreationApplication) getApplication()).getDatabase().getClubListForSearch();
@@ -110,7 +112,7 @@ public class SearchingWithClubActivity extends Activity {
                 if (!selected.toString().trim().equalsIgnoreCase(""))
                     createGymClassApicall(selected);
                 else
-                    Toast.makeText(SearchingWithClubActivity.this, "Please select at least on club", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SearchingWithClubActivity.this, "Please select at least one club to search", Toast.LENGTH_SHORT).show();
             }
         });
         getActionBar().setCustomView(actionbarView);
@@ -162,7 +164,13 @@ public class SearchingWithClubActivity extends Activity {
 //                params.put("userId", reCreationApplication.sharedPreferences.getString("userguid", ""));
                 params.put("selectedClubName", reCreationApplication.sharedPreferences.getString("club", ""));
                 SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();
-                e.putString("clubsfilter", "["+clubs+"]");
+
+                JSONArray jsonArray = new JSONArray();
+                String[] clubsArray = clubs.split(",");
+                for (int i=0;i<clubsArray.length;i++)
+                    jsonArray.put(clubsArray[i]);
+
+                e.putString("clubsfilter", jsonArray.toString());
                 e.commit();
                 params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsfilter", ""));
                 params.put("fullName", reCreationApplication.sharedPreferences.getString("fullname", ""));

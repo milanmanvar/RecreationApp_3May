@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -43,7 +44,7 @@ public class IncludingWithSearchActivity extends Activity {
         getActionBar().setDisplayUseLogoEnabled(false);
         getActionBar().setDisplayShowTitleEnabled(false);
         reCreationApplication = (ReCreationApplication) getApplication();
-        setUpActionBar("Include with");
+        setUpActionBar("Session Times");
         switchMorning = (Switch) findViewById(R.id.searchinclude_switchMorning);
         switchLunch = (Switch) findViewById(R.id.searchinclude_switchLunch);
         switchEvening = (Switch) findViewById(R.id.searchinclude_switchEvening);
@@ -53,19 +54,19 @@ public class IncludingWithSearchActivity extends Activity {
         switchEvening.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                createGymClassApicall(3, isChecked);
+                //createGymClassApicall(3, isChecked);
             }
         });
         switchMorning.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                createGymClassApicall(1, isChecked);
+                //createGymClassApicall(1, isChecked);
             }
         });
         switchLunch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                createGymClassApicall(2, isChecked);
+                //createGymClassApicall(2, isChecked);
             }
         });
     }
@@ -108,20 +109,20 @@ public class IncludingWithSearchActivity extends Activity {
         tvClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String selected = getSelectedType();
-                Intent i = new Intent();
-                i.putExtra("selectedtype", selected);
-                setResult(RESULT_OK, i);
-                SharedPreferences.Editor e = ((ReCreationApplication) getApplication()).sharedPreferences.edit();
-                e.putString("selectedtype", selected);
-                e.commit();
-                finish();
+
+                if(switchMorning.isChecked() || switchLunch.isChecked() || switchEvening.isChecked()){
+                    updateUserApicall();
+                }else{
+                    Toast.makeText(IncludingWithSearchActivity.this, "Please select at least one session time to search ", Toast.LENGTH_SHORT).show();
+                }
+
+
             }
         });
         getActionBar().setCustomView(actionbarView);
     }
 
-    private void createGymClassApicall(final int searchWith, final boolean flag) {
+    private void updateUserApicall() {
         final ProgressDialog pd = ProgressDialog.show(IncludingWithSearchActivity.this, "", "Please wait", false, false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Constant.updateRecreationUser,
                 new Response.Listener<String>() {
@@ -130,6 +131,15 @@ public class IncludingWithSearchActivity extends Activity {
                         if (pd != null && pd.isShowing())
                             pd.dismiss();
                         Log.e("Update", "" + response);
+
+                        String selected = getSelectedType();
+                        Intent i = new Intent();
+                        i.putExtra("selectedtype", selected);
+                        setResult(RESULT_OK, i);
+                        SharedPreferences.Editor e = ((ReCreationApplication) getApplication()).sharedPreferences.edit();
+                        e.putString("selectedtype", selected);
+                        e.commit();
+                        finish();
                     }
                 },
 
@@ -150,12 +160,12 @@ public class IncludingWithSearchActivity extends Activity {
                 params.put("selectedClubName", reCreationApplication.sharedPreferences.getString("club", ""));
                 params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsfilter", ""));
                 params.put("fullName", reCreationApplication.sharedPreferences.getString("fullname", ""));
-                if (searchWith == 1)
-                    params.put("searchMorningClass", String.valueOf(flag));
-                else if (searchWith == 2)
-                    params.put("searchLunchClass", String.valueOf(flag));
-                else
-                    params.put("searchEveningClass", String.valueOf(flag));
+                //if (searchWith == 1)
+                    params.put("searchMorningClasses", switchMorning.isChecked()+"");
+                //else if (searchWith == 2)
+                    params.put("searchLunchtimeClasses", switchLunch.isChecked()+"");
+                //else
+                    params.put("searchEveningClasses", switchEvening.isChecked()+"");
                 Log.e("update selected ", "" + params.toString());
                 return params;
             }

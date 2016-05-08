@@ -39,7 +39,7 @@ public class OurClubActivity extends BaseActivity {
         appPreferences = ((ReCreationApplication) getApplication()).sharedPreferences;
         setUpActionBar("Our Clubs");
         findViewById(R.id.actionbar_layout_iv_myclass).setVisibility(View.GONE);
-        clubModels = (((ReCreationApplication) getApplication()).getDatabase().getClubList());
+        clubModels = (((ReCreationApplication) getApplication()).getDatabase().getClubListWithShowAll());
         listLocations = (ListView) findViewById(R.id.listLocation);
         listLocations.setAdapter(new ClubLocationListAdapter(this, clubModels));
         try {
@@ -47,6 +47,8 @@ public class OurClubActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
 
     }
 
@@ -71,15 +73,22 @@ public class OurClubActivity extends BaseActivity {
                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
                     for (ClubModel_New c : clubModels) {
-                        MarkerOptions marker = new MarkerOptions().position(new LatLng(c.getLat(), c.getLng())).title(c.getName());
+                        MarkerOptions marker = new MarkerOptions().position(new LatLng(c.getLat(), c.getLng())).title(c.getName()).snippet(c.getAddress());
                         marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
                         builder.include(marker.getPosition());
                         if (c.getId() != -1)
                             googleMap.addMarker(marker);
+
+
                     }
-                    LatLngBounds bounds = builder.build();
-                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
-                    googleMap.animateCamera(cu);
+//                    LatLngBounds bounds = builder.build();
+//
+//                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 0);
+//                    googleMap.animateCamera(cu);
+
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(clubModels.get(0).getLat(), clubModels.get(0).getLng())).zoom(7).build();
+                    googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }
             });
 
@@ -93,7 +102,8 @@ public class OurClubActivity extends BaseActivity {
 
     public void mapZoomOut() {
 
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(3.0f));
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(clubModels.get(0).getLat(), clubModels.get(0).getLng())).zoom(7).build();
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
 

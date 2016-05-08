@@ -352,6 +352,46 @@ public class DBHelper extends SQLiteOpenHelper {
                 } while (cursor.moveToNext());
 
 
+
+
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return timeTables;
+    }
+
+    public ArrayList<ClubModel_New> getClubListWithShowAll() {
+        ArrayList<ClubModel_New> timeTables = new ArrayList<>();
+        String sql = "SELECT * FROM Club GROUP BY ClubName ORDER BY _id";
+        Cursor cursor = null;
+        try {
+            cursor = myDataBase.rawQuery(sql, null);
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                ClubModel_New club;
+                do {
+                    club = new ClubModel_New();
+                    club.setId(cursor.getInt(cursor.getColumnIndex(TABLE_CLUB_COL_ID)));
+                    club.setName(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_COL_CLUB_NAME)));
+                    club.setAddress(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_COL_ADDRESS)));
+                    club.setDays(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_COL_DAYS)));
+                    club.setHours(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_COL_HOURS)));
+                    club.setHoursTitle(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_COL_HOURSTITLE)));
+                    club.setPhone(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_COL_PHONE)));
+                    club.setLat(cursor.getDouble(cursor.getColumnIndex(TABLE_CLUB_COL_LATITUDE)));
+                    club.setLng(cursor.getDouble(cursor.getColumnIndex(TABLE_CLUB_COL_LONGITUDE)));
+                    club.setIs24Hour(cursor.getInt(cursor.getColumnIndex(TABLE_CLUB_COL_IS_24)) == 1 ? true : false);
+                    if (club.getLat() != 0 && club.getLng() != 0)
+                        timeTables.add(club);
+
+                } while (cursor.moveToNext());
+
+
                 club = new ClubModel_New();
                 club.setId(-1);
                 club.setName("Show all clubs");
@@ -382,6 +422,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     club = new SearchWithModel();
                     club.setName(cursor.getString(cursor.getColumnIndex(TABLE_CLUB_COL_CLUB_NAME)));
                     club.setIsChecked(false);
+                    if(cursor.getDouble(cursor.getColumnIndex(TABLE_CLUB_COL_LATITUDE))!=0 && cursor.getDouble(cursor.getColumnIndex(TABLE_CLUB_COL_LONGITUDE))!=0)
                     timeTables.add(club);
 
                 } while (cursor.moveToNext());

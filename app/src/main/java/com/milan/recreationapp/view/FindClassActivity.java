@@ -34,6 +34,7 @@ public class FindClassActivity extends BaseActivity {
     private LinearLayout lMorning, lLunch, lEvening;
     private String selectedClubs, selectedClass;
     private SharedPreferences appSharedPreferences;
+    ReCreationApplication reCreationApplication;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,13 +75,14 @@ public class FindClassActivity extends BaseActivity {
             }
         });
 
-        txtIncludingWith.setText(getString(R.string.include_with, appSharedPreferences.getString("selectedtype", "morning,lunchtime and evening")));
+        //txtIncludingWith.setText(getString(R.string.include_with, appSharedPreferences.getString("selectedtype", "morning,lunchtime and evening")));
         //txtSearchingWith.setText(getString(R.string.searching_with, appSharedPreferences.getString("selectedclubs", appSharedPreferences.getString("club", ""))));
-        selectedClass = appSharedPreferences.getString("selectedtype", "morning,lunchtime and evening");
+        selectedClass = appSharedPreferences.getString("selectedtype", "morning,lunchtime,evening");
 //        selectedClubs = appSharedPreferences.getString("selectedclubs", appSharedPreferences.getString("club", ""));
 
+        displaySessionText();
 
-        ReCreationApplication reCreationApplication = (ReCreationApplication) getApplicationContext();
+         reCreationApplication= (ReCreationApplication) getApplicationContext();
 
         final ArrayList<ClubModel_New> clubs = reCreationApplication.getDatabase().getClubList();
         ArrayList<String> selectedClub = new ArrayList<>();
@@ -89,8 +91,20 @@ public class FindClassActivity extends BaseActivity {
         String selected = TextUtils.join(",", selectedClub);
 
 
+//        if(appSharedPreferences.getString("selectedclubs", "").length()==0){
+//            txtSearchingWith.setText(getString(R.string.searching_with,"all clubs"));
+//            selectedClubs = appSharedPreferences.getString("selectedclubs", selected);
+//        }else{
+//
+//
+//
+//            selectedClubs = appSharedPreferences.getString("selectedclubs", selected);
+//            txtSearchingWith.setText(getString(R.string.searching_with,selectedClubs));
+//        }
+
         selectedClubs = appSharedPreferences.getString("selectedclubs", selected);
-        txtSearchingWith.setText(selectedClubs);
+        displaySelectedClubText();
+
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -196,6 +210,55 @@ public class FindClassActivity extends BaseActivity {
         }
     }
 
+
+    private void displaySelectedClubText(){
+
+        final ArrayList<ClubModel_New> clubsArray = reCreationApplication.getDatabase().getClubList();
+
+        if (selectedClubs.contains(",")) {
+            String[] clubs = selectedClubs.split(",");
+
+            if(clubs.length == clubsArray.size()){
+                txtSearchingWith.setText(getString(R.string.searching_with,"all clubs"));
+            }
+            else if (clubs.length > 3) {
+                txtSearchingWith.setText(getString(R.string.searching_with, clubs[0] + ", " + clubs[1] + ", " + clubs[2] + " +" + String.valueOf(clubs.length - 3)+" more"));
+            } else if(clubs.length == 3){
+                txtSearchingWith.setText(getString(R.string.searching_with, clubs[0] + ", " + clubs[1] + ", " + clubs[2]));
+            }else if(clubs.length == 2){
+                txtSearchingWith.setText(getString(R.string.searching_with, clubs[0] + ", " + clubs[1]));
+            }else{
+                txtSearchingWith.setText(getString(R.string.searching_with, selectedClubs));
+            }
+        } else
+            txtSearchingWith.setText(getString(R.string.searching_with, selectedClubs));
+
+    }
+
+    private void displaySessionText(){
+
+        String displayText="";
+        String[] sessionArray = selectedClass.split(",");
+        if(sessionArray.length == 3 || sessionArray.length == 2){
+            for(int i=0;i<sessionArray.length;i++){
+                if(i==sessionArray.length-1){
+                    displayText = displayText + " and "+ sessionArray[i];
+                }else if(i==sessionArray.length-2){
+                    displayText = displayText + sessionArray[i];
+                }
+                else {
+                    displayText = displayText + sessionArray[i]+", ";
+                }
+            }
+        }else{
+
+            displayText = displayText +" only " + sessionArray[0];
+        }
+
+
+        txtIncludingWith.setText(getString(R.string.include_with, displayText));
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -207,15 +270,12 @@ public class FindClassActivity extends BaseActivity {
                 Log.e("Selected type:", "" + selectedClubs);
             }
         }
-        txtIncludingWith.setText(getString(R.string.include_with, selectedClass));
-        if (selectedClubs.contains(",")) {
-            String[] clubs = selectedClubs.split(",");
-            if (clubs.length > 3) {
-                txtSearchingWith.setText(getString(R.string.searching_with, clubs[0] + "," + clubs[1] + "," + clubs[2] + " +" + String.valueOf(clubs.length - 3)));
-            } else
-                txtSearchingWith.setText(getString(R.string.searching_with, selectedClubs));
-        } else
-            txtSearchingWith.setText(getString(R.string.searching_with, selectedClubs));
+
+
+        displaySessionText();
+        displaySelectedClubText();
+
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 }
