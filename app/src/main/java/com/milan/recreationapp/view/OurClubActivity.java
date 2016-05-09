@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.milan.recreationapp.R;
 import com.milan.recreationapp.ReCreationApplication;
@@ -31,6 +32,8 @@ public class OurClubActivity extends BaseActivity {
     private ArrayList<ClubModel_New> clubModels;
     private SharedPreferences appPreferences;
     private ListView listLocations;
+
+    private ArrayList<Marker> markerClick = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +77,14 @@ public class OurClubActivity extends BaseActivity {
 
                     for (ClubModel_New c : clubModels) {
                         MarkerOptions marker = new MarkerOptions().position(new LatLng(c.getLat(), c.getLng())).title(c.getName()).snippet(c.getAddress());
+
+
                         marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
                         builder.include(marker.getPosition());
-                        if (c.getId() != -1)
-                            googleMap.addMarker(marker);
+                        if (c.getId() != -1){
+                            Marker marker1 = googleMap.addMarker(marker);
+                            markerClick.add(marker1);
+                        }
 
 
                     }
@@ -87,16 +94,23 @@ public class OurClubActivity extends BaseActivity {
 //                    googleMap.animateCamera(cu);
 
 
+
+
                     CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(clubModels.get(0).getLat(), clubModels.get(0).getLng())).zoom(7).build();
                     googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+
                 }
             });
 
         }
     }
 
-    public void changeLocation(double lat, double lng, String name) {
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(lat, lng)).zoom(12).build();
+    public void changeLocation(double lat, double lng, String name,int position) {
+        Marker marker = markerClick.get(position);
+        marker.showInfoWindow();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(marker.getPosition()).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 

@@ -50,7 +50,8 @@
                 android:hint="@string/your_name_hint_txt"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
-                android:textColorHint="@android:color/white" />
+                android:textColorHint="@android:color/white"
+                android:textCursorDrawable="@drawable/edittext_cursor" />
 
         </LinearLayout>
 

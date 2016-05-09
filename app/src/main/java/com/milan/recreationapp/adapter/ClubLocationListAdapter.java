@@ -92,7 +92,7 @@ public class ClubLocationListAdapter extends BaseAdapter {
 
                     ((OurClubActivity) context).mapZoomOut();
                 }else{
-                    ((OurClubActivity) context).changeLocation(listItem.get(position).getLat(), listItem.get(position).getLng(), listItem.get(position).getName());
+                    ((OurClubActivity) context).changeLocation(listItem.get(position).getLat(), listItem.get(position).getLng(), listItem.get(position).getName(), position);
                 }
 
 

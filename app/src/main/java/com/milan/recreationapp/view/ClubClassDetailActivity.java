@@ -163,7 +163,7 @@ public class ClubClassDetailActivity extends BaseActivity {
                 params.put("location", clubDayTime.getLocation());
                 params.put("instructor", clubDayTime.getInstructor());
                 params.put("gymClassDescription", clubDayTime.getDesc());
-                params.put("dayString", clubDayTime.getDay());
+                params.put("dayString", clubDayTime.getDay().substring(0,1).toUpperCase()+clubDayTime.getDay().substring(1,clubDayTime.getDay().length()));
 
 
                 Log.e("create class param:", "" + params.toString());
@@ -209,7 +209,7 @@ public class ClubClassDetailActivity extends BaseActivity {
         builder.setNegativeButton("No thanks", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //createGymClassApicall();
+                createGymClassApicall();
                 dialog.dismiss();
             }
         });

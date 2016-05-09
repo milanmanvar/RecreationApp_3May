@@ -146,15 +146,15 @@ public class AlertClassActivity extends Activity {
 
 
     private void updateUserApicall() {
-        final ProgressDialog pd = ProgressDialog.show(AlertClassActivity.this, "", "Please wait", false, false);
+       // final ProgressDialog pd = ProgressDialog.show(AlertClassActivity.this, "", "Please wait", false, false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Constant.updateRecreationUser,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        if (pd != null && pd.isShowing())
-                            pd.dismiss();
+
                         Log.e("update user", "" + response);
                         //Toast.makeText(ClubTimeTableActivity.this,"successfully call", Toast.LENGTH_LONG).show();
+                        finish();
                     }
                 },
 
@@ -165,8 +165,7 @@ public class AlertClassActivity extends Activity {
 
 
                         error.printStackTrace();
-                        if (pd != null && pd.isShowing())
-                            pd.dismiss();
+
                     }
                 }) {
             @Override
@@ -177,8 +176,8 @@ public class AlertClassActivity extends Activity {
                 params.put("fullName", reCreationApplication.sharedPreferences.getString("fullname",""));
                 params.put("selectedClubName", reCreationApplication.sharedPreferences.getString("club",""));
                 params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsFilter",""));
-                params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsFilter",""));
-                params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsFilter",""));
+                params.put("hasAllowedAccessToCalendar", true+"");
+                params.put("hasAllowedNotifications", true+"");
 
                 Log.e("update user req param:", "" + params.toString());
 //                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();
@@ -220,7 +219,8 @@ public class AlertClassActivity extends Activity {
                         if (pd != null && pd.isShowing())
                             pd.dismiss();
 
-                        finish();
+                        updateUserApicall();
+
 
                     }
                 },
