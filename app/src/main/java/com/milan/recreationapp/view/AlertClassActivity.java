@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -219,6 +220,9 @@ public class AlertClassActivity extends Activity {
                         if (pd != null && pd.isShowing())
                             pd.dismiss();
 
+                        SharedPreferences.Editor editor  =  reCreationApplication.sharedPreferences.edit();
+                        editor.putInt(getString(R.string.pref_alert_prior),timeBefore);
+                        editor.commit();
                         updateUserApicall();
 
 

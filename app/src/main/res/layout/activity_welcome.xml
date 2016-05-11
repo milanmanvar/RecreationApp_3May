@@ -47,6 +47,7 @@
                 android:drawableLeft="@drawable/ic_name"
                 android:drawablePadding="20dp"
                 android:focusableInTouchMode="true"
+                android:inputType="textCapSentences"
                 android:hint="@string/your_name_hint_txt"
                 android:singleLine="true"
                 android:textColor="@android:color/white"

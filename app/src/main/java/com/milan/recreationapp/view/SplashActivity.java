@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 
@@ -21,32 +22,54 @@ import java.security.NoSuchAlgorithmException;
  */
 public class SplashActivity extends Activity {
 
+    private ReCreationApplication application;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        application = (ReCreationApplication) this.getApplication();
 
-        new AsyncSplashLoader().execute();
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.milan.recreationapp",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
+//        new AsyncSplashLoader().execute();
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo(
+//                    "com.milan.recreationapp",
+//                    PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        } catch (PackageManager.NameNotFoundException e) {
+//
+//        } catch (NoSuchAlgorithmException e) {
+//
+//        }
 
-        } catch (NoSuchAlgorithmException e) {
-
-        }
+        showAnimation();
 
     }
 
+    private void showAnimation() {
+        new Handler().postDelayed(new Runnable() {
 
-    private class AsyncSplashLoader extends AsyncTask<Void, Void, Void> {
+            @Override
+            public void run() {
+
+                if (application.sharedPreferences.getString("club", "").equalsIgnoreCase("")) {
+                    startActivity(new Intent(SplashActivity.this, WelcomeScreen.class));
+                } else {
+                    startActivity(new Intent(SplashActivity.this, HomeScreen.class));
+                }
+                finish();
+
+            }
+        }, 2000);
+    }
+
+
+    /*private class AsyncSplashLoader extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -72,6 +95,6 @@ public class SplashActivity extends Activity {
 
             }
         }
-    }
+    }*/
 
 }

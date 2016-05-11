@@ -61,6 +61,7 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
     private DBHelper myDbHelper;
     // private ArrayList<String> clubs;
     private JSONArray jsClub;
+    ProgressDialog pd;
 
 
     @Override
@@ -79,10 +80,14 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
         clubList = new ArrayList<>();
         clubPopUp = new PopupMenu(this, btnChooseYourClub);
 
+        pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false, false);
+
         downloadClubData();
         clubPopUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+
+                Utils.hideSoftKeyboard(WelcomeScreen.this);
                 btnChooseYourClub.setText(item.getTitle());
                 SharedPreferences.Editor editor = ((ReCreationApplication) getApplication()).sharedPreferences.edit();
                 editor.putString("club", item.getTitle().toString());
@@ -94,7 +99,7 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
     }
 
     private void downloadClubData() {
-        final ProgressDialog pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false, false);
+      //  final ProgressDialog pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false, false);
         StringRequest reqDownloadClub = new StringRequest(Constant.clubUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -103,8 +108,8 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
                 editor.putString("clublist", response);
                 editor.commit();
                 parseClubListXML(response);
-                if (pd != null && pd.isShowing())
-                    pd.dismiss();
+//                if (pd != null && pd.isShowing())
+//                    pd.dismiss();
                 try {
                     callClubsDataApi();
                 } catch (UnsupportedEncodingException e) {
@@ -250,7 +255,7 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
     }
 
     private void callClubsDataApi() throws UnsupportedEncodingException {
-        final ProgressDialog pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false, false);
+       // final ProgressDialog pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false, false);
         for (int i = 0; i < clubList.size(); i++) {
             String url = Constant.clubDataUrl + clubList.get(i).getName().replaceAll(" ", "%20") + ".xml";
             final int finalI = i;
@@ -283,16 +288,19 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
                                         myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "evening", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
                                     }
                                 }
+
+                                if (finalI == clubList.size() - 1) {
+                                    if (pd != null && pd.isShowing())
+                                        pd.dismiss();
+                                }
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     });
 
-                    if (finalI == clubList.size() - 1) {
-                        if (pd != null && pd.isShowing())
-                            pd.dismiss();
-                    }
+
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -306,6 +314,13 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
                     HashMap<String, String> hashMap = new HashMap<String, String>();
                     hashMap.put("Content-Type", "application/xml; charset=utf-8");
                     return hashMap;
+                }
+
+                @Override
+                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                    return super.parseNetworkResponse(response);
+
+
                 }
             };
             application.addToRequestQueue(reqDownloadClub);

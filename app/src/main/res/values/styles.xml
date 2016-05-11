@@ -9,8 +9,15 @@
     </style>
 
 
-    <style name="MyTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="MyTheme" parent="android:Theme.Holo.Light">
         <!-- Customize your theme here. -->
+
+
+    </style>
+    <style name="MyThemeSplash" parent="android:Theme.Translucent.NoTitleBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowDisablePreview">true</item>
+
 
     </style>
     <style name="AppTheme.NoActionBar">
