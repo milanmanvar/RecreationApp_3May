@@ -62,6 +62,7 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
     // private ArrayList<String> clubs;
     private JSONArray jsClub;
     ProgressDialog pd;
+    private int count = 0;
 
 
     @Override
@@ -255,79 +256,165 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
     }
 
     private void callClubsDataApi() throws UnsupportedEncodingException {
-       // final ProgressDialog pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false, false);
-        for (int i = 0; i < clubList.size(); i++) {
-            String url = Constant.clubDataUrl + clubList.get(i).getName().replaceAll(" ", "%20") + ".xml";
-            final int finalI = i;
-            StringRequest reqDownloadClub = new StringRequest(url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(final String response) {
-                    SharedPreferences.Editor editor = ((ReCreationApplication) getApplication()).sharedPreferences.edit();
-                    editor.putString("club" + finalI, response);
-                    editor.commit();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                ArrayList<ClubTimeTable> clubTimeTables = Utils.parseClubDetailXML(response);
-                                for (ClubTimeTable timeTable : clubTimeTables) {
-                                    ClubTimeTable clubTimeTable = timeTable;
-                                    for (ClubDayTime dayTime : clubTimeTable.getMorningClasses()) {
-                                        ClubDayTime clubDayTime = dayTime;
-                                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
-                                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "morning", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
-                                    }
-                                    for (ClubDayTime dayTime : clubTimeTable.getLunchtimeClasses()) {
-                                        ClubDayTime clubDayTime = dayTime;
-                                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
-                                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "lunchtime", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
-                                    }
-                                    for (ClubDayTime dayTime : clubTimeTable.getEveningClasses()) {
-                                        ClubDayTime clubDayTime = dayTime;
-                                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
-                                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "evening", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
-                                    }
-                                }
+//        final ProgressDialog pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false, false);
+//        for (int i = 0; i < clubList.size(); i++) {
+        String url = Constant.clubDataUrl + clubList.get(count).getName().replaceAll(" ", "%20") + ".xml";
+        final int finalI = count;
+        StringRequest reqDownloadClub = new StringRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(final String response) {
+                SharedPreferences.Editor editor = application.sharedPreferences.edit();
+                editor.putString("club" + finalI, response);
+                editor.commit();
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                try {
+//                    ArrayList<ClubTimeTable> clubTimeTables = Utils.parseClubDetailXML(response);
+//                    for (ClubTimeTable timeTable : clubTimeTables) {
+//                        ClubTimeTable clubTimeTable = timeTable;
+//                        for (ClubDayTime dayTime : clubTimeTable.getMorningClasses()) {
+//                            ClubDayTime clubDayTime = dayTime;
+//                            ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+//                            myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "morning", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+//                        }
+//                        for (ClubDayTime dayTime : clubTimeTable.getLunchtimeClasses()) {
+//                            ClubDayTime clubDayTime = dayTime;
+//                            ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+//                            myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "lunchtime", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+//                        }
+//                        for (ClubDayTime dayTime : clubTimeTable.getEveningClasses()) {
+//                            ClubDayTime clubDayTime = dayTime;
+//                            ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+//                            myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "evening", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//                        }
+//                    });
 
-                                if (finalI == clubList.size() - 1) {
-                                    if (pd != null && pd.isShowing())
-                                        pd.dismiss();
-                                }
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-
-
+                if (finalI == clubList.size() - 1) {
+                    //if (pd != null && pd.isShowing())
+                    //    pd.dismiss();
+                    new AsyncStoreDataOnDb().execute();
+                } else {
+                    count = count + 1;
+                    try {
+                        callClubsDataApi();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("error:", "" + error);
-
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("error:", "" + error);
+                if (finalI == clubList.size() - 1) {
+                    if (pd != null && pd.isShowing())
+                        pd.dismiss();
+                } else {
+                    count = count + 1;
+                    try {
+                        callClubsDataApi();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> hashMap = new HashMap<String, String>();
-                    hashMap.put("Content-Type", "application/xml; charset=utf-8");
-                    return hashMap;
-                }
 
-                @Override
-                protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                    return super.parseNetworkResponse(response);
-
-
-                }
-            };
-            application.addToRequestQueue(reqDownloadClub);
-        }
-
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> hashMap = new HashMap<String, String>();
+                hashMap.put("Content-Type", "application/xml; charset=utf-8");
+                return hashMap;
+            }
+        };
+        application.addToRequestQueue(reqDownloadClub);
+//        }
 
     }
+
+//    private void callClubsDataApi() throws UnsupportedEncodingException {
+//       // final ProgressDialog pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false, false);
+//        for (int i = 0; i < clubList.size(); i++) {
+//            String url = Constant.clubDataUrl + clubList.get(i).getName().replaceAll(" ", "%20") + ".xml";
+//            final int finalI = i;
+//            StringRequest reqDownloadClub = new StringRequest(url, new Response.Listener<String>() {
+//                @Override
+//                public void onResponse(final String response) {
+//                    SharedPreferences.Editor editor = ((ReCreationApplication) getApplication()).sharedPreferences.edit();
+//                    editor.putString("club" + finalI, response);
+//                    editor.commit();
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                ArrayList<ClubTimeTable> clubTimeTables = Utils.parseClubDetailXML(response);
+//                                for (ClubTimeTable timeTable : clubTimeTables) {
+//                                    ClubTimeTable clubTimeTable = timeTable;
+//                                    for (ClubDayTime dayTime : clubTimeTable.getMorningClasses()) {
+//                                        ClubDayTime clubDayTime = dayTime;
+//                                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+//                                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "morning", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+//                                    }
+//                                    for (ClubDayTime dayTime : clubTimeTable.getLunchtimeClasses()) {
+//                                        ClubDayTime clubDayTime = dayTime;
+//                                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+//                                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "lunchtime", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+//                                    }
+//                                    for (ClubDayTime dayTime : clubTimeTable.getEveningClasses()) {
+//                                        ClubDayTime clubDayTime = dayTime;
+//                                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+//                                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "evening", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+//                                    }
+//                                }
+//
+//                                if (finalI == clubList.size() - 1) {
+//                                    if (pd != null && pd.isShowing())
+//                                        pd.dismiss();
+//                                }
+//
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    });
+//
+//
+//                }
+//            }, new Response.ErrorListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError error) {
+//                    Log.e("error:", "" + error);
+//
+//                }
+//            }) {
+//                @Override
+//                public Map<String, String> getHeaders() throws AuthFailureError {
+//                    HashMap<String, String> hashMap = new HashMap<String, String>();
+//                    hashMap.put("Content-Type", "application/xml; charset=utf-8");
+//                    return hashMap;
+//                }
+//
+//                @Override
+//                protected Response<String> parseNetworkResponse(NetworkResponse response) {
+//                    return super.parseNetworkResponse(response);
+//
+//
+//                }
+//            };
+//            application.addToRequestQueue(reqDownloadClub);
+//        }
+//
+//
+//    }
+
+
+
 
     @Override
     public void onClick(View v) {
@@ -399,7 +486,64 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
 
     }
 
+    private void insertDetailData() {
+
+        for (int i = 0; i < clubList.size(); i++) {
+            try {
+                ArrayList<ClubTimeTable> clubTimeTables = Utils.parseClubDetailXML(application.sharedPreferences.getString(("club" + i), ""));
+                for (ClubTimeTable timeTable : clubTimeTables) {
+                    ClubTimeTable clubTimeTable = timeTable;
+                    for (ClubDayTime dayTime : clubTimeTable.getMorningClasses()) {
+                        ClubDayTime clubDayTime = dayTime;
+                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "morning", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+                    }
+                    for (ClubDayTime dayTime : clubTimeTable.getLunchtimeClasses()) {
+                        ClubDayTime clubDayTime = dayTime;
+                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "lunchtime", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+                    }
+                    for (ClubDayTime dayTime : clubTimeTable.getEveningClasses()) {
+                        ClubDayTime clubDayTime = dayTime;
+                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "evening", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+                    }
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     private class AsyncStoreDataOnDb extends AsyncTask<Void, Void, Void> {
+
+
+       // ProgressDialog pd;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+           // pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            insertDetailData();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            if (pd != null && pd.isShowing())
+                pd.dismiss();
+        }
+    }
+
+   /* private class AsyncStoreDataOnDb extends AsyncTask<Void, Void, Void> {
 
         String response;
 
@@ -465,7 +609,7 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
 
 
         }
-    }
+    }*/
 
 
 }

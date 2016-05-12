@@ -1,9 +1,11 @@
 package com.milan.recreationapp.view;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -79,10 +81,12 @@ public class OurClubActivity extends BaseActivity {
                         MarkerOptions marker = new MarkerOptions().position(new LatLng(c.getLat(), c.getLng())).title(c.getName()).snippet(c.getAddress());
 
 
-                        marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+                        //marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+                        marker.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_marker));
                         builder.include(marker.getPosition());
                         if (c.getId() != -1){
                             Marker marker1 = googleMap.addMarker(marker);
+
                             markerClick.add(marker1);
                         }
 
@@ -101,6 +105,53 @@ public class OurClubActivity extends BaseActivity {
 
 
 
+                }
+            });
+
+
+            googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                @Override
+                public View getInfoWindow(Marker marker) {
+                    return null;
+                }
+
+                @Override
+                public View getInfoContents(Marker marker) {
+
+                    View v = getLayoutInflater().inflate(R.layout.row_map_info_window, null);
+                    TextView tvClubName = (TextView) v.findViewById(R.id.club_name);
+                    TextView tvclubAddress = (TextView) v.findViewById(R.id.club_address);
+
+                    tvClubName.setText(marker.getTitle());
+                    tvclubAddress.setText(marker.getSnippet());
+
+
+//                    tvleft.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//
+//                        }
+//                    });
+
+                    // Getting the position from the marker
+                    LatLng latLng = marker.getPosition();
+
+
+                    return v;
+                }
+            });
+
+
+            googleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+
+                    int position = markerClick.indexOf(marker);
+
+                    //Toast.makeText(OurClubActivity.this,"test",Toast.LENGTH_LONG).show();
+                    Intent iDetail = new Intent(OurClubActivity.this, ClubInfoActivity.class);
+                    iDetail.putExtra("clubdata", clubModels.get(position));
+                    startActivity(iDetail);
                 }
             });
 
