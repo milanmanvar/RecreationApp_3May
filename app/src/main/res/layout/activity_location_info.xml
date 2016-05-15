@@ -49,6 +49,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"></LinearLayout>
 
+            <Button
+                android:id="@+id/clubtimetable_btnClub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="15dp"
+                android:background="@drawable/btn_round_all_corner"
+                android:padding="10dp"
+                android:text="New Button"
+                android:textColor="@android:color/white" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

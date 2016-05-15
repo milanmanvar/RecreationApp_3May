@@ -40,5 +40,5 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/ll_club_data"
-        android:src="@android:drawable/ic_dialog_info" />
+        android:src="@drawable/ic_info_blue" />
 </RelativeLayout>
