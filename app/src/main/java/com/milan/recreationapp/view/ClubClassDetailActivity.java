@@ -99,6 +99,7 @@ public class ClubClassDetailActivity extends BaseActivity {
                     //confirmationMessage();
                     //createGymClassApicall();
                     timeBefore = reCreationApplication.sharedPreferences.getInt(getString(R.string.pref_alert_prior),-1);
+                    timeBefore = -1;
                     if(timeBefore == -1)
                         confirmationMessage();
                     else
