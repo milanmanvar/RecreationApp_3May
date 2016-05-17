@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.milan.recreationapp">
+    package="com.recreation.recreationapp">
 
     <permission
-        android:name="com.milan.recreationapp.permission.MAPS_RECEIVE"
+        android:name="com.recreation.recreationapp.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.milan.recreationapp.permission.MAPS_RECEIVE" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <uses-sdk
         android:minSdkVersion="12"
@@ -27,7 +28,7 @@
         android:required="true" />
 
     <application
-        android:name=".ReCreationApplication"
+        android:name="com.recreation.recreationapp.ReCreationApplication"
         android:allowBackup="false"
 
         android:largeHeap="true"
@@ -41,7 +42,7 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name=".view.SplashActivity"
+            android:name="com.recreation.recreationapp.view.SplashActivity"
             android:label="@string/app_name"
             android:launchMode="standard"
             android:screenOrientation="portrait"
@@ -57,55 +58,55 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".view.OurClubActivity"
+            android:name="com.recreation.recreationapp.view.OurClubActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".view.ClubInfoActivity"
+            android:name="com.recreation.recreationapp.view.ClubInfoActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".view.HomeScreen"
+            android:name="com.recreation.recreationapp.view.HomeScreen"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar" />
         <activity
-            android:name=".view.WelcomeScreen"
+            android:name="com.recreation.recreationapp.view.WelcomeScreen"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".view.ClubTimeTableActivity"
+            android:name="com.recreation.recreationapp.view.ClubTimeTableActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".view.ClubTimeTableDetailActivity"
+            android:name="com.recreation.recreationapp.view.ClubTimeTableDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".view.SavedClassActivity"
+            android:name="com.recreation.recreationapp.view.SavedClassActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".view.FindClassActivity"
+            android:name="com.recreation.recreationapp.view.FindClassActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".view.IncludingWithSearchActivity"
+            android:name="com.recreation.recreationapp.view.IncludingWithSearchActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".view.SearchingWithClubActivity"
+            android:name="com.recreation.recreationapp.view.SearchingWithClubActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".view.ClubClassDetailActivity"
+            android:name="com.recreation.recreationapp.view.ClubClassDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".view.AlertClassActivity"
+            android:name="com.recreation.recreationapp.view.AlertClassActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <!--
