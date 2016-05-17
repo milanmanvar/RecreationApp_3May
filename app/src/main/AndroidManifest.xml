@@ -115,10 +115,10 @@
 -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBXp4g2iwneSb1X6_-wZ_6NNxESWx9q05Q" />
+            android:value="AIzaSyCiIQKm_Z59G_0PFHOWXXcTbLOk2p64Xrc" />
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider265683280432288"
+            android:authorities="com.facebook.app.FacebookContentProvider1610578309259458"
             android:exported="true" />
         <meta-data
             android:name="io.fabric.ApiKey"
