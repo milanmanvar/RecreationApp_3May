@@ -118,9 +118,16 @@ public class ClubClassDetailActivity extends BaseActivity {
         imgFb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                ShareLinkContent content = new ShareLinkContent.Builder()
+//                        .setContentUrl(Uri.parse("https://developers.facebook.com"))
+//                        .build();
+
+
                 ShareLinkContent content = new ShareLinkContent.Builder()
-                        .setContentUrl(Uri.parse("https://developers.facebook.com"))
-                        .build();
+                        .setContentDescription(clubDayTime.getDesc())
+
+                .build();
+
                 if (ShareDialog.canShow(ShareLinkContent.class))
                     shareDialog.show(content);
             }
@@ -130,7 +137,7 @@ public class ClubClassDetailActivity extends BaseActivity {
             public void onClick(View v) {
                 TweetComposer.Builder builder = null;
                 try {
-                    builder = new TweetComposer.Builder(ClubClassDetailActivity.this).text(getString(R.string.app_name)).url(new URL("https://www.google.com"));
+                    builder = new TweetComposer.Builder(ClubClassDetailActivity.this).text("I'm going to "+clubDayTime.getClassName()+" at ReCreation "+((ReCreationApplication) getApplication()).sharedPreferences.getString("club", "")+". Excited! :)");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
