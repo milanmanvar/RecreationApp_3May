@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.recreation.recreationapp.R;
 import com.recreation.recreationapp.ReCreationApplication;
@@ -205,8 +206,10 @@ public class FindClassActivity extends BaseActivity {
                         lEvening.addView(vBody);
                     }
                 }
-            } else
-                Utils.displayDialog("Whoops!", "No result found", FindClassActivity.this);
+            } else {
+               // Utils.displayDialog("Whoops!", "No result found", FindClassActivity.this);
+                Toast.makeText(FindClassActivity.this,"No result found",Toast.LENGTH_LONG).show();
+            }
         }
     }
 

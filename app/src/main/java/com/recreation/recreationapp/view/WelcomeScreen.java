@@ -26,6 +26,7 @@ import com.recreation.recreationapp.database.DBHelper;
 import com.recreation.recreationapp.model.ClubClassDescriptionModel;
 import com.recreation.recreationapp.model.ClubDayTime;
 import com.recreation.recreationapp.model.ClubModel;
+import com.recreation.recreationapp.model.ClubModel_New;
 import com.recreation.recreationapp.model.ClubSection;
 import com.recreation.recreationapp.model.ClubSectionBody;
 import com.recreation.recreationapp.model.ClubTimeTable;
@@ -60,6 +61,7 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
     private TextView tvLetsGo;
     private DBHelper myDbHelper;
     // private ArrayList<String> clubs;
+    private ArrayList<ClubModel_New> clubsList;
     private JSONArray jsClub;
     ProgressDialog pd;
     private int count = 0;
@@ -71,19 +73,25 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
         setContentView(R.layout.activity_welcome);
         application = (ReCreationApplication) this.getApplication();
         myDbHelper = application.getDatabase();
-        myDbHelper.deleteTableData();
+        //myDbHelper.deleteTableData();
         btnChooseYourClub = (Button) findViewById(R.id.activity_welcome_et_choose_your_club);
         etYourName = (EditText) findViewById(R.id.activity_welcome_et_your_name);
         tvLetsGo = (TextView) findViewById(R.id.activity_welcome_tv_lets_go);
 
         btnChooseYourClub.setOnClickListener(this);
         tvLetsGo.setOnClickListener(this);
-        clubList = new ArrayList<>();
+        //clubList = new ArrayList<>();
         clubPopUp = new PopupMenu(this, btnChooseYourClub);
 
-        pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false, false);
+        //pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false, false);
 
-        downloadClubData();
+        //downloadClubData();
+
+
+        clubsList = application.getDatabase().getClubList();
+        for (int i = 0; i < clubsList.size(); i++)
+            clubPopUp.getMenu().add(i, i + 1, i + 1, clubsList.get(i).getName());
+
         clubPopUp.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -145,6 +153,23 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
                         if (pd != null && pd.isShowing())
                             pd.dismiss();
                         Log.e("Sign up:", "" + response);
+
+
+                        try {
+
+                            if(application.sharedPreferences.getString("club", "").length()>0){
+
+                                if(application.sharedPreferences.getInt("clubposition",0)>0)
+                                clubsList.set(0,clubsList.get(application.sharedPreferences.getInt("clubposition",0)-1));
+
+                            }
+
+                            callClubsDataApi();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+
+
                         Intent intent = new Intent(WelcomeScreen.this, HomeScreen.class);
                         startActivity(intent);
                         finish();
@@ -169,14 +194,14 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
                 params.put("id", userGUid);
                 params.put("fullName", etYourName.getText().toString().trim());
                 params.put("selectedClubName", btnChooseYourClub.getText().toString());
-                params.put("clubsFilter", jsClub.toString());
+                params.put("clubsFilter", application.sharedPreferences.getString("clubsFilter",""));
 
                 Log.e("sign up req param:", "" + params.toString());
                 SharedPreferences.Editor e = application.sharedPreferences.edit();
                 e.putString("userguid", userGUid);
-                e.putString("clubsfilter", jsClub.toString());
+                //e.putString("clubsfilter", jsClub.toString());
                 e.putString("fullname", etYourName.getText().toString().trim());
-                e.putString("clubsFilter", jsClub.toString());
+                //e.putString("clubsFilter", jsClub.toString());
                 e.commit();
                 return params;
             }
@@ -258,7 +283,7 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
     private void callClubsDataApi() throws UnsupportedEncodingException {
 //        final ProgressDialog pd = ProgressDialog.show(WelcomeScreen.this, "", "Please wait", false, false);
 //        for (int i = 0; i < clubList.size(); i++) {
-        String url = Constant.clubDataUrl + clubList.get(count).getName().replaceAll(" ", "%20") + ".xml";
+        String url = Constant.clubDataUrl + clubsList.get(count).getName().replaceAll(" ", "%20") + ".xml";
         final int finalI = count;
         StringRequest reqDownloadClub = new StringRequest(url, new Response.Listener<String>() {
             @Override
@@ -295,7 +320,7 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
 //                        }
 //                    });
 
-                if (finalI == clubList.size() - 1) {
+                if (finalI == clubsList.size() - 1) {
                     //if (pd != null && pd.isShowing())
                     //    pd.dismiss();
                     new AsyncStoreDataOnDb().execute();
@@ -312,7 +337,7 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("error:", "" + error);
-                if (finalI == clubList.size() - 1) {
+                if (finalI == clubsList.size() - 1) {
                     if (pd != null && pd.isShowing())
                         pd.dismiss();
                 } else {
@@ -420,7 +445,7 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_welcome_et_choose_your_club:
-                if (clubList.size() > 0)
+                if (clubsList.size() > 0)
                     clubPopUp.show();
                 break;
 
@@ -486,9 +511,40 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
 
     }
 
+//    private void insertDetailData() {
+//
+//        for (int i = 0; i < clubList.size(); i++) {
+//            try {
+//                ArrayList<ClubTimeTable> clubTimeTables = Utils.parseClubDetailXML(application.sharedPreferences.getString(("club" + i), ""));
+//                for (ClubTimeTable timeTable : clubTimeTables) {
+//                    ClubTimeTable clubTimeTable = timeTable;
+//                    for (ClubDayTime dayTime : clubTimeTable.getMorningClasses()) {
+//                        ClubDayTime clubDayTime = dayTime;
+//                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+//                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "morning", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+//                    }
+//                    for (ClubDayTime dayTime : clubTimeTable.getLunchtimeClasses()) {
+//                        ClubDayTime clubDayTime = dayTime;
+//                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+//                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "lunchtime", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+//                    }
+//                    for (ClubDayTime dayTime : clubTimeTable.getEveningClasses()) {
+//                        ClubDayTime clubDayTime = dayTime;
+//                        ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
+//                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "evening", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+//                    }
+//                }
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//    }
+
     private void insertDetailData() {
 
-        for (int i = 0; i < clubList.size(); i++) {
+        for (int i = 0; i < clubsList.size(); i++) {
             try {
                 ArrayList<ClubTimeTable> clubTimeTables = Utils.parseClubDetailXML(application.sharedPreferences.getString(("club" + i), ""));
                 for (ClubTimeTable timeTable : clubTimeTables) {
@@ -496,25 +552,33 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
                     for (ClubDayTime dayTime : clubTimeTable.getMorningClasses()) {
                         ClubDayTime clubDayTime = dayTime;
                         ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
-                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "morning", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+                        application.getDatabase().insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "morning", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+                        application.getDatabase().insertOrReplaceMyClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "morning", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
                     }
                     for (ClubDayTime dayTime : clubTimeTable.getLunchtimeClasses()) {
                         ClubDayTime clubDayTime = dayTime;
                         ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
-                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "lunchtime", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+                        application.getDatabase().insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "lunchtime", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+                        application.getDatabase().insertOrReplaceMyClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "lunchtime", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
                     }
                     for (ClubDayTime dayTime : clubTimeTable.getEveningClasses()) {
                         ClubDayTime clubDayTime = dayTime;
                         ClubClassDescriptionModel clubClassDescriptionModel = Utils.getClubClassDescriptionModelArrayList().get(clubDayTime.getClassName());
-                        myDbHelper.insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "evening", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+                        application.getDatabase().insertClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "evening", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
+                        application.getDatabase().insertOrReplaceMyClubData(Utils.getClubName(), clubDayTime.getClassName(), clubDayTime.getInstructorName(), clubDayTime.getClassDuration(), clubDayTime.getClassTime(), clubTimeTable.getDay(), "evening", clubClassDescriptionModel.getDescription(), clubClassDescriptionModel.getLocation());
                     }
                 }
+
+
+                if (i == clubsList.size() - 1)
+                    SplashActivity.isLoading = false;
+                SplashActivity.filledClub.add(clubsList.get(i).getName());
+                sendBroadcast(new Intent("com.recreation.recreationapp.action"));
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
     }
 
     private class AsyncStoreDataOnDb extends AsyncTask<Void, Void, Void> {

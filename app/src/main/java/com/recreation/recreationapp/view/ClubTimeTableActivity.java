@@ -1,6 +1,10 @@
 package com.recreation.recreationapp.view;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +46,8 @@ public class ClubTimeTableActivity extends BaseActivity {
     private Button btnClub;
     private ReCreationApplication reCreationApplication;
     private PopupMenu clubPopUp;
+    BroadcastReceiver broadcastReceiver;
+    private ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +83,43 @@ public class ClubTimeTableActivity extends BaseActivity {
         btnClub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clubPopUp.show();
+
+                if(SplashActivity.isLoading){
+                    pd = ProgressDialog.show(ClubTimeTableActivity.this, "", "Please wait", false, false);
+                }else{
+                    clubPopUp.show();
+                }
+
+
             }
         });
+
+
+
+        IntentFilter intentFilter = new IntentFilter("com.recreation.recreationapp.action");
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+
+                Log.e("milan","milan "+SplashActivity.filledClub.size());
+
+                if(!SplashActivity.isLoading && pd!=null && pd.isShowing()){
+
+                    pd.dismiss();
+                    clubPopUp.show();
+                }
+
+
+
+            }
+        };
+
+
+        registerReceiver(broadcastReceiver,intentFilter);
+
+
+
     }
 
     @Override
@@ -197,5 +237,12 @@ public class ClubTimeTableActivity extends BaseActivity {
         weekDay = dayFormat.format(calendar.getTime());
         Log.e("Week day:", "" + weekDay);
         return weekDay;
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
     }
 }

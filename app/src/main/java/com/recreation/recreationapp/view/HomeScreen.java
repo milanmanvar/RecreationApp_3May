@@ -2,7 +2,10 @@ package com.recreation.recreationapp.view;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -53,6 +56,8 @@ public class HomeScreen extends Activity {
     private ArrayList<ClubModel> clubList;
     private JSONArray jsClub;
     private DBHelper myDbHelper;
+    BroadcastReceiver broadcastReceiver;
+    private boolean isLoadingCurrentClub = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +68,40 @@ public class HomeScreen extends Activity {
 
         application = (ReCreationApplication) this.getApplication();
         myDbHelper = application.getDatabase();
-        myDbHelper.deleteTableData();
-        pd = ProgressDialog.show(HomeScreen.this, "", "Please wait", false, false);
-        downloadClubData();
+        //myDbHelper.deleteTableData();
+        //pd = ProgressDialog.show(HomeScreen.this, "", "Please wait", false, false);
+        //downloadClubData();
+
+
+        IntentFilter intentFilter = new IntentFilter("com.recreation.recreationapp.action");
+         broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+
+                Log.e("milan","milan "+SplashActivity.filledClub.size());
+
+                if(!SplashActivity.isLoading){
+
+                }
+
+                if(isLoadingCurrentClub && SplashActivity.filledClub.contains(application.sharedPreferences.getString("club", "")) && pd!=null && pd.isShowing()){
+                    pd.dismiss();
+                    isLoadingCurrentClub = false;
+                    Intent intentClubTimeTable = new Intent(HomeScreen.this, ClubTimeTableActivity.class);
+                    startActivity(intentClubTimeTable);
+
+                }else if(!SplashActivity.isLoading && pd!=null && pd.isShowing()){
+                    pd.dismiss();
+                    Intent iFind = new Intent(HomeScreen.this, FindClassActivity.class);
+                    startActivity(iFind);
+                }
+
+            }
+        };
+
+
+        registerReceiver(broadcastReceiver,intentFilter);
 
     }
 
@@ -302,8 +338,14 @@ public class HomeScreen extends Activity {
     public void onHomeMenuClick(View v) {
         switch (v.getId()) {
             case R.id.lTimeTable:
-                Intent intent = new Intent(HomeScreen.this, ClubTimeTableActivity.class);
-                startActivity(intent);
+                if(SplashActivity.filledClub.contains(application.sharedPreferences.getString("club", ""))) {
+
+                    Intent intent = new Intent(HomeScreen.this, ClubTimeTableActivity.class);
+                    startActivity(intent);
+                }else{
+                    pd = ProgressDialog.show(HomeScreen.this, "", "Please wait", false, false);
+                    isLoadingCurrentClub = true;
+                }
                 break;
             case R.id.lMyClass:
                 Intent iSaved = new Intent(HomeScreen.this, SavedClassActivity.class);
@@ -314,10 +356,20 @@ public class HomeScreen extends Activity {
                 startActivity(iClub);
                 break;
             case R.id.lFindClass:
-                Intent iFind = new Intent(HomeScreen.this, FindClassActivity.class);
-                startActivity(iFind);
+                if(SplashActivity.isLoading){
+                    pd = ProgressDialog.show(HomeScreen.this, "", "Please wait", false, false);
+
+                }else {
+                    Intent iFind = new Intent(HomeScreen.this, FindClassActivity.class);
+                    startActivity(iFind);
+                }
                 break;
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
+    }
 }
