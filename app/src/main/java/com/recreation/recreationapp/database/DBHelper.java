@@ -188,6 +188,51 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void insertOrReplaceMyClubData(String clubName, String className, String instructor, String duration, String time, String day, String classtype, String description, String location){
+//
+//        String sql = "SELECT * FROM "+TABLE_MY_CLUB_DETAIL+" WHERE "+TABLE_MY_CLUB_DETAIL_COL_CLUB_NAME+" = '"+clubName +"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_NAME+" = '"+className+"' AND "
+//                +TABLE_MY_CLUB_DETAIL_COL_CLASS_INSTRUCTOR+" = '"+instructor+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_DURATION+" = '"+duration+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_TIME+" = '"+time+"' AND "
+//                +TABLE_MY_CLUB_DETAIL_COL_CLASS_DAY+" = '"+day+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_TYPE+" = '"+classtype+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_DESCRIPTION
+//                +" = '"+description+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_LOCATION+" = '"+location+"'";
+//
+//        Cursor cursor = null;
+//        try {
+//
+//            cursor = myDataBase.rawQuery(sql, null);
+//            if (cursor != null && cursor.getCount() > 0) {
+//
+//                String queryUpdate = "UPDATE "+TABLE_MY_CLUB_DETAIL+" SET "+TABLE_MY_CLUB_DETAIL_COL_CLUB_NAME+" = '"+clubName +"', "+TABLE_MY_CLUB_DETAIL_COL_CLASS_NAME+" = '"+className+"', "
+//                        +TABLE_MY_CLUB_DETAIL_COL_CLASS_INSTRUCTOR+" = '"+instructor+"', "+TABLE_MY_CLUB_DETAIL_COL_CLASS_DURATION+" = '"+duration+"', "+TABLE_MY_CLUB_DETAIL_COL_CLASS_TIME+" = '"+time+"', "
+//                        +TABLE_MY_CLUB_DETAIL_COL_CLASS_DAY+" = '"+day+"', "+TABLE_MY_CLUB_DETAIL_COL_CLASS_TYPE+" = '"+classtype+"', "+TABLE_MY_CLUB_DETAIL_COL_CLASS_DESCRIPTION
+//                        +" = '"+description+"', "+TABLE_MY_CLUB_DETAIL_COL_CLASS_LOCATION+" = '"+location+"' WHERE "+TABLE_MY_CLUB_DETAIL_COL_CLUB_NAME+" = '"+clubName +"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_NAME+" = '"+className+"' AND "
+//                        +TABLE_MY_CLUB_DETAIL_COL_CLASS_INSTRUCTOR+" = '"+instructor+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_DURATION+" = '"+duration+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_TIME+" = '"+time+"' AND "
+//                        +TABLE_MY_CLUB_DETAIL_COL_CLASS_DAY+" = '"+day+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_TYPE+" = '"+classtype+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_DESCRIPTION
+//                        +" = '"+description+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_LOCATION+" = '"+location+"'";
+//                try {
+//                    myDataBase.beginTransaction();
+//                    myDataBase.execSQL(queryUpdate);
+//                    myDataBase.setTransactionSuccessful();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    myDataBase.endTransaction();
+//                }
+//
+//            } else {
+//                insertMyClubData(clubName, className, instructor, duration, time, day, classtype, description, location);
+//            }
+//
+//        }catch (SQLException e){
+//            e.printStackTrace();
+//        }finally {
+//            if (cursor != null)
+//                cursor.close();
+//        }
+
+    }
+
+
+
+    public void insertOrReplaceMyClubData1(String clubName, String className, String instructor, String duration, String time, String day, String classtype, String description, String location){
 
         String sql = "SELECT * FROM "+TABLE_MY_CLUB_DETAIL+" WHERE "+TABLE_MY_CLUB_DETAIL_COL_CLUB_NAME+" = '"+clubName +"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_NAME+" = '"+className+"' AND "
                 +TABLE_MY_CLUB_DETAIL_COL_CLASS_INSTRUCTOR+" = '"+instructor+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_DURATION+" = '"+duration+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_TIME+" = '"+time+"' AND "
@@ -406,7 +451,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public ArrayList<ClubTimeTable_New> getClubTimeTableDetailFromNameAndDay(String name, String day) {
         ArrayList<ClubTimeTable_New> timeTables = new ArrayList<>();
-        String sql = "SELECT * FROM "+TABLE_MY_CLUB_DETAIL+" WHERE ClubName = '%s' AND Day = '%s'  ORDER BY _id";
+        String sql = "SELECT * FROM "+TABLE_CLUB_DETAIL+" WHERE ClubName = '%s' AND Day = '%s'  ORDER BY _id";
 //        String sql = "SELECT * FROM " + TABLE_CLUB_DETAIL + " WHERE " + TABLE_CLUB_DETAIL_COL_CLUB_NAME + "= '" + name + "' AND " + TABLE_CLUB_DETAIL_COL_CLASS_DAY + " ='" + day + "'";
         Cursor cursor = null;
         try {
@@ -590,6 +635,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void saveToMyClass(int id) {
+
+
+
         String queryUpdate = "UPDATE "+TABLE_MY_CLUB_DETAIL+" SET IsSaved='1' WHERE _id='%d' ";
         try {
             myDataBase.beginTransaction();

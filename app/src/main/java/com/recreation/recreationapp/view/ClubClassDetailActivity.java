@@ -99,7 +99,11 @@ public class ClubClassDetailActivity extends BaseActivity {
             btnSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    reCreationApplication.getDatabase().saveToMyClass(clubDayTime.getId());
+                    //reCreationApplication.getDatabase().saveToMyClass(clubDayTime.getId());
+                    reCreationApplication.getDatabase().insertOrReplaceMyClubData1(clubDayTime.getClubName()
+                            ,clubDayTime.getClassName(),clubDayTime.getInstructor(),clubDayTime.getDuration()
+                            ,clubDayTime.getTime(),clubDayTime.getDay(),clubDayTime.getClassType(),clubDayTime.getDesc()
+                    ,clubDayTime.getLocation());
                     btnSave.setVisibility(View.GONE);
                     txtLblSaved.setVisibility(View.VISIBLE);
                     //confirmationMessage();
