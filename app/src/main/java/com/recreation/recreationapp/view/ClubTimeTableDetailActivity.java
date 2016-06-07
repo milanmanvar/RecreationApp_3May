@@ -49,6 +49,9 @@ public class ClubTimeTableDetailActivity extends BaseActivity {
             String temp = "";
             lTimeTable.removeAllViews();
             for (int i = 0; i < list.size(); i++) {
+
+
+
                 View vMorning = getLayoutInflater().inflate(R.layout.row_timetable_title, null);
                 TextView txtTitle = (TextView) vMorning.findViewById(R.id.row_timetable_txtTitle);
 

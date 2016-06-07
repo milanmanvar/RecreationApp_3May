@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.recreation.recreationapp.R;
+import com.recreation.recreationapp.ReCreationApplication;
 import com.recreation.recreationapp.model.ClubTimeTable_New;
 import com.recreation.recreationapp.util.Utils;
 import com.recreation.recreationapp.view.ClubTimeTableDetailActivity;
@@ -26,11 +27,13 @@ public class ClubDetailTimeTableListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private ViewHolder holder;
     private int tempPos = -1;
+    private ReCreationApplication reCreationApplication;
 
     public ClubDetailTimeTableListAdapter(Context context,
                                           ArrayList<ClubTimeTable_New> items) {
         this.context = context;
         this.listItem = items;
+        this.reCreationApplication = (ReCreationApplication) context.getApplicationContext();
         inflater = LayoutInflater.from(this.context);
     }
 
@@ -78,10 +81,24 @@ public class ClubDetailTimeTableListAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                ArrayList<ClubTimeTable_New> list = reCreationApplication.getDatabase().getClubTimeTableDetailFromNameAndDay(listItem.get(position).getClubName(), listItem.get(position).getDay());
+
+                for(int i = 0; i < list.size(); i++){
+
+                    ClubTimeTable_New data = list.get(i);
+                    reCreationApplication.getDatabase().checkEntryExistOrNot(data.getClubName(),data.getClassName(),data.getInstructor(),data.getDuration(),data.getTime(),data.getDay(),data.getClassType(),data.getDesc()
+                    ,data.getLocation(),data.getId());
+                }
+
+
                 Intent iClubTimeTableDetial = new Intent(context, ClubTimeTableDetailActivity.class);
                 iClubTimeTableDetial.putExtra("timetable", listItem.get(position));
                 iClubTimeTableDetial.putExtra("title",v.getTag().toString());
                 iClubTimeTableDetial.putExtra("date", Utils.getDateFromCurrentDate(position));
+
+
+
                 context.startActivity(iClubTimeTableDetial);
             }
         });

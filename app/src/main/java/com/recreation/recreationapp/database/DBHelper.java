@@ -275,6 +275,32 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
+    public void checkEntryExistOrNot(String clubName, String className, String instructor, String duration, String time, String day, String classtype, String description, String location,int id){
+
+        String sql = "SELECT * FROM "+TABLE_MY_CLUB_DETAIL+" WHERE "+TABLE_MY_CLUB_DETAIL_COL_CLUB_NAME+" = '"+clubName +"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_NAME+" = '"+className+"' AND "
+                +TABLE_MY_CLUB_DETAIL_COL_CLASS_INSTRUCTOR+" = '"+instructor+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_DURATION+" = '"+duration+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_TIME+" = '"+time+"' AND "
+                +TABLE_MY_CLUB_DETAIL_COL_CLASS_DAY+" = '"+day+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_TYPE+" = '"+classtype+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_DESCRIPTION
+                +" = '"+description+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_LOCATION+" = '"+location+"'";
+
+        Cursor cursor = null;
+
+        try {
+
+            cursor = myDataBase.rawQuery(sql, null);
+            if (cursor != null && cursor.getCount() > 0) {
+
+
+                saveToMyClass1(id);
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+
     public void insertMyClubData(String clubName, String className, String instructor, String duration, String time, String day, String classtype, String description, String location,int cid){
         myDataBase.beginTransaction();
         try {
@@ -640,6 +666,21 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
         String queryUpdate = "UPDATE "+TABLE_MY_CLUB_DETAIL+" SET IsSaved='1' WHERE _id='%d' ";
+        try {
+            myDataBase.beginTransaction();
+            String sql = String.format(queryUpdate, id);
+            myDataBase.execSQL(sql);
+            myDataBase.setTransactionSuccessful();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            myDataBase.endTransaction();
+        }
+    }public void saveToMyClass1(int id) {
+
+
+
+        String queryUpdate = "UPDATE "+TABLE_CLUB_DETAIL+" SET IsSaved='1' WHERE _id='%d' ";
         try {
             myDataBase.beginTransaction();
             String sql = String.format(queryUpdate, id);
