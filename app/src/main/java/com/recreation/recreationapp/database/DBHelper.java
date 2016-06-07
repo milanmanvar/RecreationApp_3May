@@ -232,7 +232,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
 
-    public void insertOrReplaceMyClubData1(String clubName, String className, String instructor, String duration, String time, String day, String classtype, String description, String location){
+    public void insertOrReplaceMyClubData1(String clubName, String className, String instructor, String duration, String time, String day, String classtype, String description, String location,int id){
 
         String sql = "SELECT * FROM "+TABLE_MY_CLUB_DETAIL+" WHERE "+TABLE_MY_CLUB_DETAIL_COL_CLUB_NAME+" = '"+clubName +"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_NAME+" = '"+className+"' AND "
                 +TABLE_MY_CLUB_DETAIL_COL_CLASS_INSTRUCTOR+" = '"+instructor+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_DURATION+" = '"+duration+"' AND "+TABLE_MY_CLUB_DETAIL_COL_CLASS_TIME+" = '"+time+"' AND "
@@ -263,7 +263,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 }
 
             } else {
-                insertMyClubData(clubName, className, instructor, duration, time, day, classtype, description, location);
+                insertMyClubData(clubName, className, instructor, duration, time, day, classtype, description, location, id);
             }
 
         }catch (SQLException e){
@@ -275,11 +275,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public void insertMyClubData(String clubName, String className, String instructor, String duration, String time, String day, String classtype, String description, String location){
+    public void insertMyClubData(String clubName, String className, String instructor, String duration, String time, String day, String classtype, String description, String location,int cid){
         myDataBase.beginTransaction();
         try {
 
             ContentValues values = new ContentValues();
+            values.put(TABLE_MY_CLUB_DETAIL_COL_ID, cid);
             values.put(TABLE_MY_CLUB_DETAIL_COL_CLUB_NAME, clubName);
             values.put(TABLE_MY_CLUB_DETAIL_COL_CLASS_NAME, className);
             values.put(TABLE_MY_CLUB_DETAIL_COL_CLASS_INSTRUCTOR, instructor);
@@ -289,7 +290,7 @@ public class DBHelper extends SQLiteOpenHelper {
             values.put(TABLE_MY_CLUB_DETAIL_COL_CLASS_TYPE, classtype);
             values.put(TABLE_MY_CLUB_DETAIL_COL_CLASS_DESCRIPTION, description);
             values.put(TABLE_MY_CLUB_DETAIL_COL_CLASS_LOCATION, location);
-            values.put(TABLE_MY_CLUB_DETAIL_COL_IS_SAVED, 0);
+            values.put(TABLE_MY_CLUB_DETAIL_COL_IS_SAVED, 1);
             values.put(TABLE_MY_CLUB_DETAIL_COL_EVENDID, 0);
             values.put(TABLE_MY_CLUB_DETAIL_COL_CLASSID, "");
             long id = myDataBase.insert(TABLE_MY_CLUB_DETAIL, null, values);

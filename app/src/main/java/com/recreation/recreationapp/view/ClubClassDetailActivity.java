@@ -103,7 +103,7 @@ public class ClubClassDetailActivity extends BaseActivity {
                     reCreationApplication.getDatabase().insertOrReplaceMyClubData1(clubDayTime.getClubName()
                             ,clubDayTime.getClassName(),clubDayTime.getInstructor(),clubDayTime.getDuration()
                             ,clubDayTime.getTime(),clubDayTime.getDay(),clubDayTime.getClassType(),clubDayTime.getDesc()
-                    ,clubDayTime.getLocation());
+                    ,clubDayTime.getLocation(),clubDayTime.getId());
                     btnSave.setVisibility(View.GONE);
                     txtLblSaved.setVisibility(View.VISIBLE);
                     //confirmationMessage();
