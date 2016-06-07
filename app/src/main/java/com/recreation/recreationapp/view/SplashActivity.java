@@ -181,7 +181,8 @@ public class SplashActivity extends Activity {
                     }
                 }
 
-                clubList.set(0,clubList.get(position));
+                clubList.add(0,clubList.get(position));
+                clubList.remove(position+1);
 
             }
 

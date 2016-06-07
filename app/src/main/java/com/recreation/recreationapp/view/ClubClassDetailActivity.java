@@ -54,6 +54,7 @@ public class ClubClassDetailActivity extends BaseActivity {
     private ShareDialog shareDialog;
     private int selectedDay, hour, min,timeBefore;
     private long _eventId = 0;
+    private String dateTime = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,11 @@ public class ClubClassDetailActivity extends BaseActivity {
 
         txtClub.setText(((ReCreationApplication) getApplication()).sharedPreferences.getString("club", ""));
         reCreationApplication = (ReCreationApplication) getApplication();
+
+        if(this.getIntent().hasExtra("datetime")){
+            dateTime = getIntent().getExtras().getString("datetime");
+        }
+
         if (this.getIntent().hasExtra("clubdaytime")) {
 
             clubDayTime = (ClubTimeTable_New) this.getIntent().getSerializableExtra("clubdaytime");
@@ -346,6 +352,7 @@ public class ClubClassDetailActivity extends BaseActivity {
                 params.put("location", clubDayTime.getLocation());
                 params.put("instructor", clubDayTime.getInstructor());
                 params.put("gymClassDescription", clubDayTime.getDesc());
+                params.put("startTime", dateTime);
                 params.put("dayString", clubDayTime.getDay().substring(0,1).toUpperCase()+clubDayTime.getDay().substring(1,clubDayTime.getDay().length()));
                 if(timeBefore != -1){
                     params.put("alertPrior", timeBefore+"");
@@ -392,6 +399,7 @@ public class ClubClassDetailActivity extends BaseActivity {
                 dialog.dismiss();
                 Intent iAlert = new Intent(ClubClassDetailActivity.this, AlertClassActivity.class);
                 iAlert.putExtra("clubalert", clubDayTime);
+                iAlert.putExtra("datetime", dateTime);
                 startActivity(iAlert);
             }
         });

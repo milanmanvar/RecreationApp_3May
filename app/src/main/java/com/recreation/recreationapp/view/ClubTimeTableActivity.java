@@ -70,9 +70,16 @@ public class ClubTimeTableActivity extends BaseActivity {
                 editor.putString("club", item.getTitle().toString());
                 editor.putInt("clubposition", item.getOrder());
                 editor.commit();
-                setData();
 
-                updateUserApicall();
+                if(SplashActivity.isLoading){
+
+                    pd = ProgressDialog.show(ClubTimeTableActivity.this, "", "Please wait", false, false);
+
+                }else{
+                    setData();
+                    updateUserApicall();
+                }
+
 
                 return true;
             }
@@ -84,11 +91,11 @@ public class ClubTimeTableActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
-                if(SplashActivity.isLoading){
-                    pd = ProgressDialog.show(ClubTimeTableActivity.this, "", "Please wait", false, false);
-                }else{
+               // if(SplashActivity.isLoading){
+                //    pd = ProgressDialog.show(ClubTimeTableActivity.this, "", "Please wait", false, false);
+                //}else{
                     clubPopUp.show();
-                }
+                //}
 
 
             }
@@ -107,7 +114,9 @@ public class ClubTimeTableActivity extends BaseActivity {
                 if(!SplashActivity.isLoading && pd!=null && pd.isShowing()){
 
                     pd.dismiss();
-                    clubPopUp.show();
+                   // clubPopUp.show();
+                    setData();
+                    updateUserApicall();
                 }
 
 
@@ -129,7 +138,8 @@ public class ClubTimeTableActivity extends BaseActivity {
     }
 
     private void updateUserApicall() {
-        final ProgressDialog pd = ProgressDialog.show(ClubTimeTableActivity.this, "", "Please wait", false, false);
+        if(pd==null && (pd!=null && !pd.isShowing()))
+         pd = ProgressDialog.show(ClubTimeTableActivity.this, "", "Please wait", false, false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Constant.updateRecreationUser,
                 new Response.Listener<String>() {
                     @Override
@@ -160,6 +170,8 @@ public class ClubTimeTableActivity extends BaseActivity {
                 params.put("fullName", reCreationApplication.sharedPreferences.getString("fullname",""));
                 params.put("selectedClubName", btnClub.getText().toString());
                 params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsFilter",""));
+                params.put("hasAllowedAccessToCalendar", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_access_your_calender),false)+"");
+                params.put("hasAllowedNotifications", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_send_you_notification),false)+"");
 
                 Log.e("sign up req param:", "" + params.toString());
 //                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();

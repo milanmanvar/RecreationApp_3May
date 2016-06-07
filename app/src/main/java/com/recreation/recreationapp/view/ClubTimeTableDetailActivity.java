@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.recreation.recreationapp.R;
 import com.recreation.recreationapp.ReCreationApplication;
 import com.recreation.recreationapp.model.ClubTimeTable_New;
+import com.recreation.recreationapp.util.Utils;
 
 import java.util.ArrayList;
 
@@ -76,6 +77,9 @@ public class ClubTimeTableDetailActivity extends BaseActivity {
                     public void onClick(View v) {
                         Intent iClass = new Intent(ClubTimeTableDetailActivity.this, ClubClassDetailActivity.class);
                         iClass.putExtra("clubdaytime", list.get(finalI));
+                        String str = list.get(finalI).getTime();
+                        String finalStr = str.substring(0,str.length()-2)+" "+str.substring(str.length()-2, str.length());
+                        iClass.putExtra("datetime", getIntent().getExtras().getString("date")+" "+ Utils.get24hrFormat(finalStr));
                         startActivity(iClass);
                     }
                 });

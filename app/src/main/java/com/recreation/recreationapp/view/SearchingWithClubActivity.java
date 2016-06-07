@@ -174,6 +174,8 @@ public class SearchingWithClubActivity extends Activity {
                 e.commit();
                 params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsfilter", ""));
                 params.put("fullName", reCreationApplication.sharedPreferences.getString("fullname", ""));
+                params.put("hasAllowedAccessToCalendar", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_access_your_calender),false)+"");
+                params.put("hasAllowedNotifications", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_send_you_notification),false)+"");
                 Log.e("update selected clubs", "" + params.toString());
 
                 return params;

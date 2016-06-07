@@ -51,6 +51,7 @@ public class AlertClassActivity extends Activity {
     private boolean isHasSendNotification = true ;
     private boolean isHasAccessYourCalender = true ;
 
+    private String dateTime = "";
 
 
     @Override
@@ -64,6 +65,10 @@ public class AlertClassActivity extends Activity {
 
         reCreationApplication = (ReCreationApplication) getApplicationContext();
 
+
+        if(this.getIntent().hasExtra("datetime")){
+            dateTime = getIntent().getExtras().getString("datetime");
+        }
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
         if (this.getIntent().hasExtra("clubalert")) {
             timeTable_new = (ClubTimeTable_New) this.getIntent().getSerializableExtra("clubalert");
@@ -112,6 +117,10 @@ public class AlertClassActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 isHasSendNotification = true;
+                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();
+                e.putBoolean(getString(R.string.pref_alert_send_you_notification),isHasSendNotification);
+                e.commit();
+
 
             }
         });
@@ -121,6 +130,9 @@ public class AlertClassActivity extends Activity {
 
                 dialog.dismiss();
                 isHasSendNotification = false;
+                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();
+                e.putBoolean(getString(R.string.pref_alert_send_you_notification),isHasSendNotification);
+                e.commit();
             }
         });
         builder.show();
@@ -135,6 +147,9 @@ public class AlertClassActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 isHasAccessYourCalender = true;
+                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();
+                e.putBoolean(getString(R.string.pref_alert_access_your_calender),isHasAccessYourCalender);
+                e.commit();
                 clickAddFunction();
 
             }
@@ -145,6 +160,9 @@ public class AlertClassActivity extends Activity {
 
                 dialog.dismiss();
                 isHasAccessYourCalender = false;
+                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();
+                e.putBoolean(getString(R.string.pref_alert_access_your_calender),isHasAccessYourCalender);
+                e.commit();
                 clickAddFunction();
             }
         });
@@ -272,6 +290,9 @@ public class AlertClassActivity extends Activity {
 //                e.putString("clubsfilter", jsClub.toString());
 //                e.putString("fullname", etYourName.getText().toString().trim());
 //                e.commit();
+
+
+
                 return params;
             }
 
@@ -338,6 +359,7 @@ public class AlertClassActivity extends Activity {
                 params.put("location", timeTable_new.getLocation());
                 params.put("instructor", timeTable_new.getInstructor());
                 params.put("gymClassDescription", timeTable_new.getDesc());
+                params.put("startTime", dateTime);
                 params.put("dayString", timeTable_new.getDay().substring(0,1).toUpperCase()+timeTable_new.getDay().substring(1,timeTable_new.getDay().length()));
                 params.put("alertPrior", timeBefore+"");
                 params.put("calendarAlertEventIdentifier", _eventId+"");

@@ -166,6 +166,10 @@ public class IncludingWithSearchActivity extends Activity {
                     params.put("searchLunchtimeClasses", switchLunch.isChecked()+"");
                 //else
                     params.put("searchEveningClasses", switchEvening.isChecked()+"");
+
+                params.put("hasAllowedAccessToCalendar", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_access_your_calender),false)+"");
+                params.put("hasAllowedNotifications", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_send_you_notification),false)+"");
+
                 Log.e("update selected ", "" + params.toString());
                 return params;
             }

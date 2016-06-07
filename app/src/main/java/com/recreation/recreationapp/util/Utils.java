@@ -17,9 +17,12 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -208,6 +211,44 @@ public class Utils {
 
         // show it
         alertDialog.show();
+    }
+
+    public static String getDateFromCurrentDate(int day){
+
+        Calendar calendar = Calendar.getInstance();
+        Date today = calendar.getTime();
+
+        calendar.add(Calendar.DAY_OF_YEAR, day);
+        Date deserveDate = calendar.getTime();
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        String todayAsString = dateFormat.format(today);
+        String deserveString = dateFormat.format(deserveDate);
+
+        System.out.println(todayAsString);
+        System.out.println(deserveString);
+
+        return deserveString;
+
+    }
+
+    public static String get24hrFormat(String time){
+        try {
+        SimpleDateFormat displayFormat = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat parseFormat = new SimpleDateFormat("hh.mm a");
+        Date date = null;
+
+            date = parseFormat.parse(time);
+
+        System.out.println(parseFormat.format(date) + " = " + displayFormat.format(date));
+            return displayFormat.format(date);
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
+
     }
 
 }

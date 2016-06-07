@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.recreation.recreationapp.R;
 import com.recreation.recreationapp.model.ClubTimeTable_New;
+import com.recreation.recreationapp.util.Utils;
 import com.recreation.recreationapp.view.ClubTimeTableDetailActivity;
 
 import java.util.ArrayList;
@@ -80,6 +81,7 @@ public class ClubDetailTimeTableListAdapter extends BaseAdapter {
                 Intent iClubTimeTableDetial = new Intent(context, ClubTimeTableDetailActivity.class);
                 iClubTimeTableDetial.putExtra("timetable", listItem.get(position));
                 iClubTimeTableDetial.putExtra("title",v.getTag().toString());
+                iClubTimeTableDetial.putExtra("date", Utils.getDateFromCurrentDate(position));
                 context.startActivity(iClubTimeTableDetial);
             }
         });

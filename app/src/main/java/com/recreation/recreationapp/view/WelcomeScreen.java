@@ -157,10 +157,11 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
 
                         try {
 
-                            if(application.sharedPreferences.getString("club", "").length()>0){
+                            if(clubsList.size()>0 && application.sharedPreferences.getString("club", "").length()>0){
 
-                                if(application.sharedPreferences.getInt("clubposition",0)>0)
-                                clubsList.set(0,clubsList.get(application.sharedPreferences.getInt("clubposition",0)-1));
+                                //if(application.sharedPreferences.getInt("clubposition",0)>0)
+                                clubsList.add(0,clubsList.get(application.sharedPreferences.getInt("clubposition",0)-1));
+                                clubsList.remove(application.sharedPreferences.getInt("clubposition",0));
 
                             }
 
