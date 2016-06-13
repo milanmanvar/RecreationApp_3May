@@ -170,12 +170,15 @@ public class SearchingWithClubActivity extends Activity {
                 for (int i=0;i<clubsArray.length;i++)
                     jsonArray.put(clubsArray[i]);
 
-                e.putString("clubsfilter", jsonArray.toString());
+                e.putString("clubsFilter", jsonArray.toString());
                 e.commit();
-                params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsfilter", ""));
+                params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsFilter", ""));
                 params.put("fullName", reCreationApplication.sharedPreferences.getString("fullname", ""));
                 params.put("hasAllowedAccessToCalendar", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_access_your_calender),false)+"");
                 params.put("hasAllowedNotifications", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_send_you_notification),false)+"");
+                params.put("searchMorningClasses", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_is_morning_classes), true)+"");
+                params.put("searchLunchtimeClasses", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_is_lunch_classes), true)+"");
+                params.put("searchEveningClasses", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_is_evening_classes), true)+"");
                 Log.e("update selected clubs", "" + params.toString());
 
                 return params;

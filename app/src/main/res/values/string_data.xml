@@ -3,9 +3,13 @@
 
     <!-- preference string constant-->
     <string name="pref_is_calenderpopup">isCalenderPopup</string>
+    <string name="pref_is_notificationpopup">isNotificationPopup</string>
     <string name="pref_alert_prior">alertPrior</string>
     <string name="pref_alert_send_you_notification">isHasNotification</string>
     <string name="pref_alert_access_your_calender">isHasAccessCalender</string>
+    <string name="pref_is_morning_classes">isMorningClasses</string>
+    <string name="pref_is_lunch_classes">isLunchClasses</string>
+    <string name="pref_is_evening_classes">isEveningClasses</string>
 
 
 

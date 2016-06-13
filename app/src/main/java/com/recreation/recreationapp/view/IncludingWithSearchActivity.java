@@ -158,7 +158,7 @@ public class IncludingWithSearchActivity extends Activity {
                 params.put("id", reCreationApplication.sharedPreferences.getString("userguid", ""));
 //                params.put("userId", reCreationApplication.sharedPreferences.getString("userguid", ""));
                 params.put("selectedClubName", reCreationApplication.sharedPreferences.getString("club", ""));
-                params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsfilter", ""));
+                params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsFilter", ""));
                 params.put("fullName", reCreationApplication.sharedPreferences.getString("fullname", ""));
                 //if (searchWith == 1)
                     params.put("searchMorningClasses", switchMorning.isChecked()+"");
@@ -171,6 +171,14 @@ public class IncludingWithSearchActivity extends Activity {
                 params.put("hasAllowedNotifications", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_send_you_notification),false)+"");
 
                 Log.e("update selected ", "" + params.toString());
+
+
+                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();
+                e.putBoolean(getString(R.string.pref_is_morning_classes), switchMorning.isChecked());
+                e.putBoolean(getString(R.string.pref_is_lunch_classes), switchLunch.isChecked());
+                e.putBoolean(getString(R.string.pref_is_evening_classes), switchEvening.isChecked());
+                e.commit();
+
                 return params;
             }
 

@@ -286,8 +286,13 @@ public class ClubClassDetailActivity extends BaseActivity {
                 params.put("fullName", reCreationApplication.sharedPreferences.getString("fullname",""));
                 params.put("selectedClubName", reCreationApplication.sharedPreferences.getString("club",""));
                 params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsFilter",""));
-                params.put("hasAllowedAccessToCalendar", hasAllowedAccessToCalendar+"");
-                params.put("hasAllowedNotifications", hasAllowedNotifications+"");
+                //params.put("hasAllowedAccessToCalendar", hasAllowedAccessToCalendar+"");
+                //params.put("hasAllowedNotifications", hasAllowedNotifications+"");
+                params.put("hasAllowedAccessToCalendar", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_access_your_calender),false)+"");
+                params.put("hasAllowedNotifications", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_send_you_notification),false)+"");
+                params.put("searchMorningClasses", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_is_morning_classes), true)+"");
+                params.put("searchLunchtimeClasses", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_is_lunch_classes), true)+"");
+                params.put("searchEveningClasses", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_is_evening_classes), true)+"");
 
                 Log.e("update user req param:", "" + params.toString());
 //                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();

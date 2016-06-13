@@ -152,6 +152,9 @@ public class ClubInfoActivity extends BaseActivity {
                 params.put("clubsFilter", application.sharedPreferences.getString("clubsFilter",""));
                 params.put("hasAllowedAccessToCalendar", application.sharedPreferences.getBoolean(getString(R.string.pref_alert_access_your_calender),false)+"");
                 params.put("hasAllowedNotifications", application.sharedPreferences.getBoolean(getString(R.string.pref_alert_send_you_notification),false)+"");
+                params.put("searchMorningClasses", application.sharedPreferences.getBoolean(getString(R.string.pref_is_morning_classes), true)+"");
+                params.put("searchLunchtimeClasses", application.sharedPreferences.getBoolean(getString(R.string.pref_is_lunch_classes), true)+"");
+                params.put("searchEveningClasses", application.sharedPreferences.getBoolean(getString(R.string.pref_is_evening_classes), true)+"");
 
                 Log.e("sign up req param:", "" + params.toString());
 //                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();

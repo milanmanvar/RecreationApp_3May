@@ -157,6 +157,7 @@ public class SavedClassActivity extends Activity {
 
     public void deleteSavedClass(ClubTimeTable_New club) {
         application.getDatabase().removeToMyClass(club.getId());
+        application.getDatabase().removeToMyClass1(club.getId());
         ContentResolver cr = getContentResolver();
         ContentValues values = new ContentValues();
         Uri deleteUri = null;

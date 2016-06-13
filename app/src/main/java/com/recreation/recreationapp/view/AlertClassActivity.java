@@ -50,6 +50,7 @@ public class AlertClassActivity extends Activity {
     private long _eventId;
     private boolean isHasSendNotification = true ;
     private boolean isHasAccessYourCalender = true ;
+    private boolean isSelectOption = false;
 
     private String dateTime = "";
 
@@ -94,10 +95,11 @@ public class AlertClassActivity extends Activity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                if(reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_send_you_notification),true)){
+                isSelectOption = true;
+                if(reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_is_notificationpopup),true)){
 
                     SharedPreferences.Editor editor = reCreationApplication.sharedPreferences.edit();
-                    editor.putBoolean(getString(R.string.pref_alert_send_you_notification),false);
+                    editor.putBoolean(getString(R.string.pref_is_notificationpopup),false);
                     editor.commit();
 
                     confirmationMessageForSendYouNotification();
@@ -111,6 +113,7 @@ public class AlertClassActivity extends Activity {
     private void confirmationMessageForSendYouNotification() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("Re-Creation Would Like to Send You Notification");
+        builder.setCancelable(false);
         builder.setMessage("Notification may include alerts, sounds, and icon badges. These can be configured in settings.");
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -141,6 +144,7 @@ public class AlertClassActivity extends Activity {
     private void confirmationMessageForAccessYourCalender() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("Re-Creation Would Like to Access Your Calender");
+        builder.setCancelable(false);
         builder.setMessage(null);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
@@ -203,16 +207,22 @@ public class AlertClassActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                if(reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_alert_access_your_calender),true)){
+                if (isSelectOption) {
+                    if (reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_is_calenderpopup), true)) {
 
-                    SharedPreferences.Editor editor = reCreationApplication.sharedPreferences.edit();
-                    editor.putBoolean(getString(R.string.pref_alert_access_your_calender),false);
-                    editor.commit();
+                        SharedPreferences.Editor editor = reCreationApplication.sharedPreferences.edit();
+                        editor.putBoolean(getString(R.string.pref_is_calenderpopup), false);
+                        editor.commit();
 
-                    confirmationMessageForAccessYourCalender();
 
-                }else{
-                    clickAddFunction();
+                        confirmationMessageForAccessYourCalender();
+
+                    } else {
+                        clickAddFunction();
+                    }
+                } else {
+                    Toast.makeText(AlertClassActivity.this,"Please select atleast one option",Toast.LENGTH_LONG).show();
+
                 }
 
             }
@@ -283,6 +293,9 @@ public class AlertClassActivity extends Activity {
                 params.put("clubsFilter", reCreationApplication.sharedPreferences.getString("clubsFilter",""));
                 params.put("hasAllowedAccessToCalendar", isHasAccessYourCalender+"");
                 params.put("hasAllowedNotifications", isHasSendNotification+"");
+                params.put("searchMorningClasses", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_is_morning_classes), true)+"");
+                params.put("searchLunchtimeClasses", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_is_lunch_classes), true)+"");
+                params.put("searchEveningClasses", reCreationApplication.sharedPreferences.getBoolean(getString(R.string.pref_is_evening_classes), true)+"");
 
                 Log.e("update user req param:", "" + params.toString());
 //                SharedPreferences.Editor e = reCreationApplication.sharedPreferences.edit();
