@@ -163,6 +163,26 @@ public class ClubClassDetailActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(reCreationApplication.getDatabase().checkEntryExistOrNotInMyClass(clubDayTime.getClubName()
+                ,clubDayTime.getClassName(),clubDayTime.getInstructor(),clubDayTime.getDuration()
+                ,clubDayTime.getTime(),clubDayTime.getDay(),clubDayTime.getClassType(),clubDayTime.getDesc()
+                ,clubDayTime.getLocation(),clubDayTime.getId())){
+
+            btnSave.setVisibility(View.GONE);
+            txtLblSaved.setVisibility(View.VISIBLE);
+
+        }else{
+
+            btnSave.setVisibility(View.VISIBLE);
+            txtLblSaved.setVisibility(View.GONE);
+        }
+
+    }
+
     private void saveClassBaseOnAlertPrio(){
         addEvent();
         createGymClassApicall();
@@ -407,6 +427,7 @@ public class ClubClassDetailActivity extends BaseActivity {
     private void confirmationMessage() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("Are you sure?");
+        builder.setCancelable(false);
         builder.setMessage("Successfully added to My Classes. Would you like to be alerted before this class starts?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
@@ -415,7 +436,7 @@ public class ClubClassDetailActivity extends BaseActivity {
                 Intent iAlert = new Intent(ClubClassDetailActivity.this, AlertClassActivity.class);
                 iAlert.putExtra("clubalert", clubDayTime);
                 iAlert.putExtra("datetime", dateTime);
-                startActivity(iAlert);
+                startActivityForResult(iAlert,1);
             }
         });
         builder.setNegativeButton("No thanks", new DialogInterface.OnClickListener() {
@@ -428,4 +449,18 @@ public class ClubClassDetailActivity extends BaseActivity {
         builder.show();
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(resultCode == RESULT_OK){
+
+            if(requestCode == 1){
+                createGymClassApicall();
+            }
+
+        }
+
+    }
 }

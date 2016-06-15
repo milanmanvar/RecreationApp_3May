@@ -131,6 +131,7 @@ public class SavedClassActivity extends Activity {
         tvClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 finish();
             }
         });

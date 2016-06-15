@@ -204,6 +204,7 @@ public class WelcomeScreen extends Activity implements View.OnClickListener {
                 e.putString("fullname", etYourName.getText().toString().trim());
                 //e.putString("clubsFilter", jsClub.toString());
                 e.commit();
+                Log.e("signup param", "" + params);
                 return params;
             }
 
