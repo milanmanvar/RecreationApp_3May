@@ -409,6 +409,14 @@ public class AlertClassActivity extends Activity {
         reCreationApplication.addToRequestQueue(stringRequest);
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        setResult(RESULT_OK);
+        finish();
+
+    }
+
     public void addEvent() {
         Calendar calDate = new GregorianCalendar();
         calDate.set(Calendar.DAY_OF_WEEK, selectedDay);
